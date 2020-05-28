@@ -1,0 +1,87 @@
+<div data-plugin-style-id="ldap-authorization-plugin">
+  <style>
+    [data-plugin-style-id="ldap-authorization-plugin"] .form-help-content {
+      color:         #666;
+      font-style:    italic;
+      clear:         both;
+      font-size:     0.82rem;
+      margin-top:    -15px;
+      margin-bottom: 10px;
+    }
+
+    [data-plugin-style-id="ldap-authorization-plugin"] .form-help-content .code {
+      padding:          16px;
+      overflow:         auto;
+      font-size:        85%;
+      line-height:      1.45;
+      background-color: #f6f8fa;
+      border-radius:    3px;
+    }
+
+    [data-plugin-style-id="ldap-authorization-plugin"] fieldset {
+      border:        1px solid #ddd;
+      padding:       20px;
+      border-radius: 3px;
+    }
+
+    [data-plugin-style-id="ldap-authorization-plugin"] legend {
+      font-size:     0.875rem;
+      padding:       5px;
+      font-weight:   600;
+      margin-bottom: 0px;
+    }
+  </style>
+  <fieldset>
+    <legend>Map Roles Using Group Membership Attribute On User</legend>
+    <div class="row">
+      <div class="columns medium-12 large-12">
+          <label ng-class="{'is-invalid-label': GOINPUTNAME[UserGroupMembershipAttribute].$error.server}">User Group Membership Attribute</label>
+          <input ng-class="{'is-invalid-input': GOINPUTNAME[UserGroupMembershipAttribute].$error.server}" type="text" ng-model="UserGroupMembershipAttribute" ng-required="true" placeholder="memberOf"/>
+          <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[UserGroupMembershipAttribute].$error.server}" ng-show="GOINPUTNAME[UserGroupMembershipAttribute].$error.server">{{GOINPUTNAME[UserGroupMembershipAttribute].$error.server}}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns medium-12 large-12">
+          <label ng-class="{'is-invalid-label': GOINPUTNAME[GroupIdentifiers].$error.server}">Group Identifiers</label>
+          <textarea ng-class="{'is-invalid-input': GOINPUTNAME[GroupIdentifiers].$error.server}" type="text" ng-model="GroupIdentifiers" ng-required="true" rows="3" placeholder="ou=groups,dc=example,dc=com"></textarea>
+          <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[GroupIdentifiers].$error.server}" ng-show="GOINPUTNAME[GroupIdentifiers].$error.server">{{GOINPUTNAME[GroupIdentifiers].$error.server}}</span>
+      </div>
+    </div>
+    <label class="form-help-content">
+      These properties can be used to map LDAP/AD groups to GoCD role for LDAP/AD servers where the group information is available as part of the user entry.
+      <div class="code">
+        <strong>UserGroupMembershipAttribute</strong>: memberOf<br/>
+        <strong>GroupIdentifiers</strong>: CN=GoAdmins,OU=Groups,OU=Enterprise,OU=Principal,DC=corporate,DC=example,DC=com
+      </div>
+      In the above example, user having the <strong>memberOf</strong> attribute with value <strong>CN=GoAdmins,OU=Groups,OU=Enterprise,OU=Principal,DC=corporate,DC=example,DC=com</strong> will be mapped to this role.
+    </label>
+  </fieldset>
+
+  <br/>
+
+  <fieldset>
+    <legend>Map Roles Using Group Membership Filter</legend>
+    <div class="row">
+      <div class="columns medium-12 large-12">
+        <label ng-class="{'is-invalid-label': GOINPUTNAME[GroupSearchBases].$error.server}">Group Search Bases</label>
+        <textarea ng-class="{'is-invalid-input': GOINPUTNAME[GroupSearchBases].$error.server}" type="text" ng-model="GroupSearchBases" ng-required="true" rows="3" placeholder="ou=groups,dc=example,dc=com"></textarea>
+        <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[GroupSearchBases].$error.server}" ng-show="GOINPUTNAME[GroupSearchBases].$error.server">{{GOINPUTNAME[GroupSearchBases].$error.server}}</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="columns medium-12 large-12">
+        <label ng-class="{'is-invalid-label': GOINPUTNAME[GroupMembershipFilter].$error.server}">Group Membership Filter</label>
+        <input ng-class="{'is-invalid-input': GOINPUTNAME[GroupMembershipFilter].$error.server}" type="text" ng-model="GroupMembershipFilter" ng-required="true" placeholder="(! (memberUid={uid}) (member={dn}))"/>
+        <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[GroupMembershipFilter].$error.server}" ng-show="GOINPUTNAME[GroupMembershipFilter].$error.server">{{GOINPUTNAME[GroupMembershipFilter].$error.server}}</span>
+      </div>
+    </div>
+    <label class="form-help-content">
+      In absence of <strong>memberOf</strong> overlay in LDAP/AD servers, <strong>GroupMembershipFilter</strong> can be used to map the LDAP/AD groups to GoCD roles. Providing the <strong>GroupSearchBase</strong> would narrow down the search scope.<br/>
+      <a  href="https://extensions-docs.gocd.org/ldap/current/plugin-role-configuration" target="_blank" rel="noopener noreferrer">Read more</a>
+    </label>
+  </fieldset>
+</div>
+
+
+

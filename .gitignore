@@ -1,0 +1,19 @@
+# Intellij files
+.idea/
+
+# gradle's output dir
+build/
+
+# the gradle temp dir
+.gradle
+
+src/markdown/NOTICE.md
+src/main/resources-generated/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+classes/
+server-work/
+out
+**/.DS_Store

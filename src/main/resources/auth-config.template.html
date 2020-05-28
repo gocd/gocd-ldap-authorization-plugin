@@ -1,0 +1,130 @@
+<div data-plugin-style-id="ldap-authorization-plugin">
+  <style>
+    [data-plugin-style-id="ldap-authorization-plugin"] .form-help-content {
+      color:         #666;
+      font-style:    italic;
+      clear:         both;
+      font-size:     0.82rem;
+      margin-top:    -15px;
+      margin-bottom: 10px;
+    }
+
+    [data-plugin-style-id="ldap-authorization-plugin"] .form-help-content .code {
+      padding:          16px;
+      overflow:         auto;
+      font-size:        85%;
+      line-height:      1.45;
+      background-color: #f6f8fa;
+      border-radius:    3px;
+    }
+
+  </style>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[Url].$error.server}">URI:<span class='asterix'>*</span></label>
+      <input ng-class="{'is-invalid-input': GOINPUTNAME[Url].$error.server}" type="text" ng-model="Url" ng-required="true" placeholder="ldap://your.first.uri:port"/>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Url].$error.server}" ng-show="GOINPUTNAME[Url].$error.server">{{GOINPUTNAME[Url].$error.server}}</span>
+  </div>
+
+  <div class="form_item_block">
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[StartTLS].$error.server}" type="checkbox" ng-model="StartTLS" ng-true-value="true" ng-false-value="false"/>
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[StartTLS].$error.server}">StartTLS</label>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[StartTLS].$error.server}" ng-show="GOINPUTNAME[StartTLS].$error.server">{{GOINPUTNAME[StartTLS].$error.server}}</span>
+    <label class="form-help-content"><strong>StartTLS</strong> is a mechanism for avoiding the need to listen on a separate port for SSL connections. Enabling StartTLS would require the server certificate to be configured.</label>
+  </div>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[ManagerDN].$error.server}">Manager DN:</label>
+      <input ng-class="{'is-invalid-input': GOINPUTNAME[ManagerDN].$error.server}" type="text" ng-model="ManagerDN" ng-required="true"/>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[ManagerDN].$error.server}" ng-show="GOINPUTNAME[ManagerDN].$error.server">{{GOINPUTNAME[ManagerDN].$error.server}}</span>
+  </div>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[Password].$error.server}">Password:<span class='asterix'>*</span></label>
+      <input ng-class="{'is-invalid-input': GOINPUTNAME[Password].$error.server}" type="password" ng-model="Password" ng-required="true"/>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Password].$error.server}" ng-show="GOINPUTNAME[Password].$error.server">{{GOINPUTNAME[Password].$error.server}}</span>
+    <label class="form-help-content">Password is mandatory only if a Manger DN is provided.</label>
+  </div>
+
+  <div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[Certificate].$error.server}">Certificate:</label>
+    <textarea ng-class="{'is-invalid-input': GOINPUTNAME[Certificate].$error.server}" ng-model="Certificate" rows="4"></textarea>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[Certificate].$error.server}" ng-show="GOINPUTNAME[Certificate].$error.server">{{GOINPUTNAME[Certificate].$error.server}}</span>
+    <label class="form-help-content">
+      Provide the server <strong>X.509 Certificate</strong> in PEM format if using ldaps or StartTLS is enabled.
+      <br/>
+      If a certificate is not configured, the plugin will look for server certificate in following order:
+      <br/>
+      <ul>
+        <li>Use the truststore defined using the Java system property <strong>javax.net.ssl.trustStore</strong></li>
+        <li>In absence of truststore from the system property look for <strong>java-home/lib/security/jssecacerts</strong>
+          or <strong>java-home/lib/security/cacerts</strong></li>
+      </ul>
+    </label>
+  </div>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[SearchBases].$error.server}">Search Base:<span class='asterix'>*</span></label>
+      <textarea ng-class="{'is-invalid-input': GOINPUTNAME[SearchBases].$error.server}" type="text" ng-model="SearchBases" ng-required="true" rows="3" placeholder=""></textarea>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[SearchBases].$error.server}" ng-show="GOINPUTNAME[SearchBases].$error.server">{{GOINPUTNAME[SearchBases].$error.server}}</span>
+    <label class="form-help-content">This field defines the location in the directory from which the LDAP search begins. You can provide multiple
+      search bases. If multiple search bases are configured the plugin would look for the user in each search base
+      sequentially until the user is found.
+      <div class="code">
+        ou=users,ou=system<br/>
+        ou=employee,ou=system
+      </div>
+    </label>
+  </div>
+
+  <div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[UserLoginFilter].$error.server}">User Login Filter:<span class='asterix'>*</span></label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[UserLoginFilter].$error.server}" type="text" ng-model="UserLoginFilter" ng-required="true"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[UserLoginFilter].$error.server}" ng-show="GOINPUTNAME[UserLoginFilter].$error.server">{{GOINPUTNAME[UserLoginFilter].$error.server}}</span>
+    <label class="form-help-content">LDAP search filter used during authentication to lookup for a user entry matching the given expression.</label>
+  </div>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[UserNameAttribute].$error.server}">User Name Attribute:<span class='asterix'>*</span></label>
+      <input ng-class="{'is-invalid-input': GOINPUTNAME[UserNameAttribute].$error.server}" type="text" ng-model="UserNameAttribute" ng-required="true"/>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[UserNameAttribute].$error.server}" ng-show="GOINPUTNAME[UserNameAttribute].$error.server">{{GOINPUTNAME[UserNameAttribute].$error.server}}</span>
+    <label class="form-help-content">Value of the attribute is mapped to GoCD User's <strong>username</strong> field.</label>
+  </div>
+
+  <div class="form_item_block">
+      <label ng-class="{'is-invalid-label': GOINPUTNAME[UserSearchFilter].$error.server}">User Search Filter:</label>
+      <input ng-class="{'is-invalid-input': GOINPUTNAME[UserSearchFilter].$error.server}" type="text" ng-model="UserSearchFilter" ng-required="true" placeholder="(|(sAMAccountName=*{0}*)(uid=*{0}*)(cn=*{0}*)(mail=*{0}*)(otherMailbox=*{0}*))"/>
+      <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[UserSearchFilter].$error.server}" ng-show="GOINPUTNAME[UserSearchFilter].$error.server">{{GOINPUTNAME[UserSearchFilter].$error.server}}</span>
+    <label class="form-help-content">LDAP search filter used to lookup for users matching a given search term. This is an optional configuration,
+      the default filter used is
+      <div class="code">(|(sAMAccountName=*{0}*)(uid=*{0}*)(cn=*{0}*)(mail=*{0}*)(otherMailbox=*{0}*))</div>
+    </label>
+  </div>
+
+  <div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[DisplayNameAttribute].$error.server}">Display Name Attribute:</label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[DisplayNameAttribute].$error.server}" type="text" ng-model="DisplayNameAttribute" placeholder="cn"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[DisplayNameAttribute].$error.server}" ng-show="GOINPUTNAME[DisplayNameAttribute].$error.server">{{GOINPUTNAME[DisplayNameAttribute].$error.server}}</span>
+    <label class="form-help-content">Value of the attribute is mapped to GoCD User <strong>displayname</strong> field, default attribute used is
+      <strong>cn</strong>.
+    </label>
+  </div>
+
+  <div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[EmailAttribute].$error.server}">Email Attribute:</label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[EmailAttribute].$error.server}" type="text" ng-model="EmailAttribute" placeholder="mail"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[EmailAttribute].$error.server}" ng-show="GOINPUTNAME[EmailAttribute].$error.server">{{GOINPUTNAME[EmailAttribute].$error.server}}</span>
+    <label class="form-help-content">
+      Value of the attribute is mapped to GoCD User's <strong>mail</strong> field, default value used is <strong>mail</strong>.
+    </label>
+  </div>
+
+  <div class="form_item_block">
+    <label ng-class="{'is-invalid-label': GOINPUTNAME[SearchTimeout].$error.server}">Search Timeout:</label>
+    <input ng-class="{'is-invalid-input': GOINPUTNAME[SearchTimeout].$error.server}" type="text" ng-model="SearchTimeout" placeholder="5"/>
+    <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[SearchTimeout].$error.server}" ng-show="GOINPUTNAME[SearchTimeout].$error.server">{{GOINPUTNAME[SearchTimeout].$error.server}}</span>
+    <label class="form-help-content">
+      Timeout in seconds for search operations, default value is <strong>5 secs</strong>.
+    </label>
+  </div>
+</div>
