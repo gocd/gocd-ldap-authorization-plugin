@@ -84,7 +84,7 @@ dependencies {
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
   testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.16.1'
 
-  integrationTestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+  integrationTestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
   integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core', version: '2.0.0-M24'
   integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-annotations', version: '2.0.0-M24'
   integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-integ', version: '2.0.0-M24'
