@@ -7,8 +7,7 @@ Table of Contents
 
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-  * [Configuration](#configuring-the-ldap-plugin)
-  * [Example](EXAMPLES.md)
+  * [Configuration](#configuring-the-plugin)
 
 ## Prerequisites
 

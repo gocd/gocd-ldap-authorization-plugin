@@ -13,6 +13,14 @@ Table of Contents
 
   * [Building the code base](#building-the-code-base)
   * [Install and configure the plugin](docs/INSTALL.md)
+    * [Prerequisites](docs/INSTALL.md#prerequisites)
+    * [Installation](docs/INSTALL.md#installation)
+    * [Configuration](docs/INSTALL.md#configuring-the-plugin)
+        * [Authorization Configuration](docs/AUTHORIZATION_CONFIGURATION.md)
+        * [Plugin Role Configuration](docs/PLUGIN_ROLE_CONFIGURATION.md)
+  * [Examples](docs/EXAMPLES.md)
+    * [Map users to a role using the UserGroupMembershipAttribute and GroupIdentifiers](docs/EXAMPLES.md#map-users-to-a-role-using-the-usergroupmembershipattribute-and-groupidentifiers)
+    * [Map users to a role using the GroupMembershipFilter and GroupSearchBases](docs/EXAMPLES.md#map-users-to-a-role-using-the-groupmembershipfilter-and-groupsearchbases)
   * [Troubleshooting](docs/TROUBLESHOOT.md)
 
 ## Building the code base
