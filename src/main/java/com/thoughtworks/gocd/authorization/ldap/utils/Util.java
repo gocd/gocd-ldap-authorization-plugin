@@ -58,18 +58,18 @@ public class Util {
         try {
             Properties properties = new Properties();
             properties.load(new StringReader(s));
-            return (String) properties.get("pluginId");
+            return (String) properties.get("id");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static String fullVersion() {
-        String s = readResource("/version.properties");
+        String s = readResource("/plugin.properties");
         try {
             Properties properties = new Properties();
             properties.load(new StringReader(s));
-            return (String) properties.get("fullVersion");
+            return (String) properties.get("version");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
