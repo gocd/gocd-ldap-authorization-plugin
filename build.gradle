@@ -21,8 +21,8 @@ group = 'com.thoughtworks.gocd'
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.authorization.ldap'
-  pluginVersion = '4.0.1'
-  goCdVersion = '19.2.0'
+  pluginVersion = '4.1.10'
+  goCdVersion = '20.9.0'
   name = 'LDAP Authorization Plugin for GoCD'
   description = 'LDAP Authorization Plugin for GoCD'
   vendorName = 'ThoughtWorks, Inc.'
