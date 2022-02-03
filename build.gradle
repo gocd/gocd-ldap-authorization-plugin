@@ -42,29 +42,22 @@ gocdPlugin {
 version = gocdPlugin.fullVersion(project)
 
 repositories {
-  jcenter()
+  mavenCentral()
   mavenLocal()
 }
 
 sourceSets {
-  test {
-    java {
-      compileClasspath += configurations.compileOnly
-      runtimeClasspath += configurations.compileOnly
-    }
-  }
-
   integrationTest {
     java.srcDirs = ['src/integration']
     resources.srcDirs += ['src/testdata']
-    compileClasspath += main.output + configurations.compileOnly
-    runtimeClasspath += main.output + configurations.compileOnly
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
   }
 }
 
 configurations {
   integrationTestImplementation.extendsFrom testImplementation
-  integrationTestRuntime.extendsFrom testRuntime
+  integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -77,6 +70,7 @@ dependencies {
   implementation group: 'org.apache.directory.api', name: 'api-ldap-client-api', version: '1.0.3'
   implementation group: 'org.apache.directory.api', name: 'api-ldap-codec-standalone', version: '1.0.0'
 
+  testImplementation group: 'cd.go.plugin', name: 'go-plugin-api', version: '21.4.0'
   testImplementation group: 'junit', name: 'junit', version: '4.13.2'
   testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
   testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: '2.2'
@@ -102,7 +96,7 @@ task integrationTest(type: Test, description: 'Runs the ldap integration tests.'
 check.dependsOn integrationTest
 
 jar {
-  from(configurations.compileClasspath) {
+  from(configurations.runtimeClasspath) {
     into "lib/"
   }
 }
