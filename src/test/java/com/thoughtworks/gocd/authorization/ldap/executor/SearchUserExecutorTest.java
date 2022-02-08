@@ -34,7 +34,7 @@ import java.util.Arrays;
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.forSearchWithMultipleAuthConfigs;
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.forSearchWithSearchFilter;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

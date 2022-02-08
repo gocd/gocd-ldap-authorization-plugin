@@ -22,10 +22,12 @@ import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CertificateValidatorTest {
 

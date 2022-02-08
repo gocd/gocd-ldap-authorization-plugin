@@ -20,19 +20,13 @@ import com.thoughtworks.gocd.authorization.ldap.exception.InvalidUsernameExcepti
 import com.thoughtworks.gocd.authorization.ldap.mapper.UserMapper;
 import com.thoughtworks.gocd.authorization.ldap.model.User;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.Matchers.any;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 public class UserMapperTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldAbleToMapUserFromValidAttributes() throws Exception {
@@ -53,10 +47,8 @@ public class UserMapperTest {
         entry.add("displayName", "Java Duke");
         final UserMapper userMapper = new UserMapper("non-exiting-field", "displayName", "mail");
 
-        thrown.expect(any(InvalidUsernameException.class));
-        thrown.expectMessage("Username can not be blank. Please check `SearchFilter` attribute on `<authConfig>` profile.");
-        User user = userMapper.map(entry);
-
-        assertNull(user);
+        assertThrows("Username can not be blank. Please check `SearchFilter` attribute on `<authConfig>` profile.",
+                InvalidUsernameException.class,
+                () -> userMapper.map(entry));
     }
 }

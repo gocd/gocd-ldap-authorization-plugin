@@ -31,7 +31,7 @@ import java.util.Set;
 import static com.thoughtworks.gocd.authorization.ldap.utils.Util.GSON;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

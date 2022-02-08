@@ -39,11 +39,11 @@ import java.util.*;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.roleConfigWith;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class LdapAuthorizerTest {
 
@@ -65,7 +65,7 @@ public class LdapAuthorizerTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
+        openMocks(this);
         user = new User("ford", "bford", "ford@aspire.com", entry);
 
         ldapAuthorizer = new LdapAuthorizer(ldapFactory, roleMapper, builder);

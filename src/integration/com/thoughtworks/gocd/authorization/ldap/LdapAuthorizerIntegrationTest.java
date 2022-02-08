@@ -28,7 +28,7 @@ import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConf
 import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConfigWithGroupMembershipFilter;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;;
 
 public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 

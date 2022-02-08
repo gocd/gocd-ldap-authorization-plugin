@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class LdapAuthenticatorIntegrationTest extends BaseIntegrationTest {

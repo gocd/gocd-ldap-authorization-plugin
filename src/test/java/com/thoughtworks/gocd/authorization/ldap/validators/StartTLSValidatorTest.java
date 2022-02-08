@@ -22,7 +22,8 @@ import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class StartTLSValidatorTest {

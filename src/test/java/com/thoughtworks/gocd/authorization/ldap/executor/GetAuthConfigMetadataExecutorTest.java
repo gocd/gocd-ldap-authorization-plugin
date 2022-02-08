@@ -27,9 +27,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.*;;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class GetAuthConfigMetadataExecutorTest {
 

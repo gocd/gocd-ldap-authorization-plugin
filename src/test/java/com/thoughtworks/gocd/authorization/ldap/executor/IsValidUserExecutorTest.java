@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.getRequestBodyMapForIsUserValid;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;;
 import static org.mockito.Mockito.*;
 
 public class IsValidUserExecutorTest {

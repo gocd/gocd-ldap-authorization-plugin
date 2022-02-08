@@ -18,17 +18,13 @@ package com.thoughtworks.gocd.authorization.ldap;
 
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 public class LdapSearchFilterBuilderTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void build_shouldEvaluateSearchExpressionAndReturnSearchFilter() throws Exception {
@@ -58,10 +54,11 @@ public class LdapSearchFilterBuilderTest {
         final Entry entry = new DefaultEntry();
         entry.setDn("cn=bford,ou=system");
 
-        thrown.expect(RuntimeException.class);
-        thrown.expectMessage("Failed to build search filter `(| (member={uid}) (memberUid=cn=bford,ou=system))`. Missing attribute for the expression `uid`");
-
         final LdapSearchFilterBuilder builder = new LdapSearchFilterBuilder();
-        builder.build("(| (member={uid}) (memberUid={dn}))", entry);
+        assertThrows(
+                "Failed to build search filter `(| (member={uid}) (memberUid=cn=bford,ou=system))`. Missing attribute for the expression `uid`",
+                RuntimeException.class,
+                () -> builder.build("(| (member={uid}) (memberUid={dn}))", entry))
+        ;
     }
 }
