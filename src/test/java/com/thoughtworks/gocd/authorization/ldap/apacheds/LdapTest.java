@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +65,25 @@ public class LdapTest {
         assertThat(searchRequest.getSizeLimit(), is(1L));
         assertThat(searchRequest.getFilter(), is(FilterParser.parse("(uid=foo)")));
         assertThat(searchRequest.getTimeLimit(), is(10));
+    }
+
+    @Test
+    public void shouldEscapeSearchFilterValues() throws ParseException {
+        final LdapConfiguration ldapConfiguration = new LdapConfigurationMother.Builder()
+                .withSearchTimeout(10)
+                .withSearchBases("ou=foo,dc=bar")
+                .build();
+
+        final LdapConnectionTemplate ldapConnectionTemplate = mock(LdapConnectionTemplate.class);
+        final Ldap ldap = new Ldap(ldapConfiguration, ldapConnectionTemplate);
+        final ArgumentCaptor<SearchRequest> argumentCaptor = ArgumentCaptor.forClass(SearchRequestImpl.class);
+
+        when(ldapConnectionTemplate.search(argumentCaptor.capture(), ArgumentMatchers.<EntryMapper<Entry>>any())).thenReturn(Collections.singletonList(new DefaultEntry()));
+
+        String injectionUserName = "*)(objectclass=*";
+        ldap.search("(uid={0})", new String[]{injectionUserName}, 1);
+
+        assertThat(argumentCaptor.getValue().getFilter(), is(FilterParser.parse("(uid=\\2A\\29\\28objectclass=\\2A)")));
     }
 
     @Test

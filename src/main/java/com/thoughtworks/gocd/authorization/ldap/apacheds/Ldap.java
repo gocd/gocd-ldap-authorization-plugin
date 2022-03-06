@@ -22,6 +22,7 @@ import org.apache.directory.api.ldap.codec.api.LdapApiServiceFactory;
 import org.apache.directory.api.ldap.extras.controls.ppolicy_impl.PasswordPolicyDecorator;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.filter.FilterEncoder;
 import org.apache.directory.api.ldap.model.message.*;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
@@ -104,7 +105,7 @@ public class Ldap {
         });
     }
 
-    public <T> List<T> search(final String filter, final Object[] filterArgs, final EntryMapper<T> mapper, final int maxResultCount) {
+    public <T> List<T> search(final String filter, final String[] filterArgs, final EntryMapper<T> mapper, final int maxResultCount) {
         final List<T> searchResults = new ArrayList<>();
         for (String searchBase : ldapConfiguration.getSearchBases()) {
             int resultsToFetch = resultsToFetch(maxResultCount, searchResults.size());
@@ -118,7 +119,7 @@ public class Ldap {
                         .setScope(SearchScope.SUBTREE)
                         .addAttributes("*")
                         .setSizeLimit(resultsToFetch)
-                        .setFilter(format(filter, filterArgs))
+                        .setFilter(FilterEncoder.format(filter, filterArgs))
                         .setTimeLimit(ldapConfiguration.getSearchTimeout())
                         .setBase(new Dn(searchBase));
 
@@ -131,7 +132,7 @@ public class Ldap {
         return searchResults;
     }
 
-    public List<Entry> search(final String filter, final Object[] filterArgs, final int maxResultCount) {
+    public List<Entry> search(final String filter, final String[] filterArgs, final int maxResultCount) {
         return search(filter, filterArgs, entry -> entry, maxResultCount);
     }
 

@@ -38,7 +38,7 @@ public class LdapTest extends BaseIntegrationTest {
         final LdapConfiguration ldapConfiguration = ldapConfigurationWithValidCert("ldaps", new String[]{"ou=system"});
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        final List<Entry> search = ldap.search("(uid={0})", new Object[]{"bford"}, 0);
+        final List<Entry> search = ldap.search("(uid=*{0}*)", new String[]{"bford"}, 0);
 
         assertNotNull(search);
         assertThat(search, hasSize(1));
@@ -50,7 +50,7 @@ public class LdapTest extends BaseIntegrationTest {
         final LdapConfiguration ldapConfiguration = ldapConfigurationWithValidCert("ldaps", new String[]{"ou=system"});
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        final List<Entry> search = ldap.search("(uid={0})", new Object[]{"*banks*"}, 2);
+        final List<Entry> search = ldap.search("(uid=*{0}*)", new String[]{"banks"}, 2);
 
         assertNotNull(search);
         assertThat(search, hasSize(2));
@@ -131,7 +131,7 @@ public class LdapTest extends BaseIntegrationTest {
 
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        final List<Entry> results = ldap.search("(uid={0})", new Object[]{"*banks*"}, 100);
+        final List<Entry> results = ldap.search("(uid=*{0}*)", new String[]{"banks"}, 100);
 
         assertThat(results, hasSize(2));
 
