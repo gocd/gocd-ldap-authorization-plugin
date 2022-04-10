@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 15
+          distribution: adopt
       - name: Test with Gradle
         run: ./gradlew assemble check
   previewGithubRelease:
