@@ -20,9 +20,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.authorization.ldap.utils.Util;
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import java.util.Base64;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
@@ -37,6 +37,6 @@ public class GetPluginIconExecutorTest {
         }.getType());
         assertThat(hashMap.size(), is(2));
         assertThat(hashMap.get("content_type"), is("image/png"));
-        assertThat(Util.readResourceBytes("/gocd_72_72_icon.png"), is(Base64.decodeBase64(hashMap.get("data"))));
+        assertThat(Util.readResourceBytes("/gocd_72_72_icon.png"), is(Base64.getDecoder().decode(hashMap.get("data"))));
     }
 }
