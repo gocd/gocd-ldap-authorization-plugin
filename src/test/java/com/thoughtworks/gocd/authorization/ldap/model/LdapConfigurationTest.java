@@ -16,12 +16,10 @@
 
 package com.thoughtworks.gocd.authorization.ldap.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LdapConfigurationTest {
 
@@ -43,15 +41,15 @@ public class LdapConfigurationTest {
         LdapConfiguration ldapConfiguration = LdapConfiguration.fromJSON(json);
 
         assertNotNull(ldapConfiguration);
-        assertThat(ldapConfiguration.getUrl(), is("ldap://localhost:10389"));
-        assertThat(ldapConfiguration.getSearchBases(), contains("ou=users,ou=system", "ou=employee,ou=system"));
-        assertThat(ldapConfiguration.getManagerDn(), is("uid=admin,ou=system"));
-        assertThat(ldapConfiguration.getPassword(), is("secret"));
-        assertThat(ldapConfiguration.getUserLoginFilter(), is("(uid={0})"));
-        assertThat(ldapConfiguration.getDisplayNameAttribute(), is("displayName"));
-        assertThat(ldapConfiguration.getEmailAttribute(), is("mail"));
-        assertThat(ldapConfiguration.getUserSearchFilter(), is("(cn={0})"));
-        assertThat(ldapConfiguration.getSearchTimeout(), is(10));
+        assertThat(ldapConfiguration.getUrl()).isEqualTo("ldap://localhost:10389");
+        assertThat(ldapConfiguration.getSearchBases()).contains("ou=users,ou=system", "ou=employee,ou=system");
+        assertThat(ldapConfiguration.getManagerDn()).isEqualTo("uid=admin,ou=system");
+        assertThat(ldapConfiguration.getPassword()).isEqualTo("secret");
+        assertThat(ldapConfiguration.getUserLoginFilter()).isEqualTo("(uid={0})");
+        assertThat(ldapConfiguration.getDisplayNameAttribute()).isEqualTo("displayName");
+        assertThat(ldapConfiguration.getEmailAttribute()).isEqualTo("mail");
+        assertThat(ldapConfiguration.getUserSearchFilter()).isEqualTo("(cn={0})");
+        assertThat(ldapConfiguration.getSearchTimeout()).isEqualTo(10);
         assertTrue(ldapConfiguration.startTLS());
     }
 
@@ -60,10 +58,10 @@ public class LdapConfigurationTest {
         LdapConfiguration ldapConfiguration = LdapConfiguration.fromJSON("{}");
 
         assertNotNull(ldapConfiguration);
-        assertThat(ldapConfiguration.getDisplayNameAttribute(), is("cn"));
-        assertThat(ldapConfiguration.getEmailAttribute(), is("mail"));
-        assertThat(ldapConfiguration.getUserSearchFilter(), is("(|(sAMAccountName=*{0}*)(uid=*{0}*)(cn=*{0}*)(mail=*{0}*)(otherMailbox=*{0}*))"));
-        assertThat(ldapConfiguration.getSearchTimeout(), is(5));
+        assertThat(ldapConfiguration.getDisplayNameAttribute()).isEqualTo("cn");
+        assertThat(ldapConfiguration.getEmailAttribute()).isEqualTo("mail");
+        assertThat(ldapConfiguration.getUserSearchFilter()).isEqualTo("(|(sAMAccountName=*{0}*)(uid=*{0}*)(cn=*{0}*)(mail=*{0}*)(otherMailbox=*{0}*))");
+        assertThat(ldapConfiguration.getSearchTimeout()).isEqualTo(5);
         assertFalse(ldapConfiguration.startTLS());
     }
 
@@ -77,7 +75,7 @@ public class LdapConfigurationTest {
         LdapConfiguration ldapConfiguration = LdapConfiguration.fromJSON(json);
 
         assertNotNull(ldapConfiguration);
-        assertThat(ldapConfiguration.getUserLoginFilter(), is("(uid={0})"));
-        assertThat(ldapConfiguration.getUserSearchFilter(), is("(cn={0})"));
+        assertThat(ldapConfiguration.getUserLoginFilter()).isEqualTo("(uid={0})");
+        assertThat(ldapConfiguration.getUserSearchFilter()).isEqualTo("(cn={0})");
     }
 }

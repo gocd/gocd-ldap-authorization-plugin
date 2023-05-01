@@ -24,8 +24,8 @@ import com.thoughtworks.gocd.authorization.ldap.apacheds.LdapFactory;
 import com.thoughtworks.gocd.authorization.ldap.mapper.UserMapper;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.model.User;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -33,8 +33,7 @@ import java.util.Arrays;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.forSearchWithMultipleAuthConfigs;
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.forSearchWithSearchFilter;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +43,7 @@ public class SearchUserExecutorTest {
     private LdapFactory ldapFactory;
     private Ldap ldap;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         request = mock(GoPluginApiRequest.class);
         ldapFactory = mock(LdapFactory.class);
@@ -66,7 +65,7 @@ public class SearchUserExecutorTest {
         verify(ldap).search(filterArgumentCaptor.capture(), eq(new String[]{"some-text"}), any(UserMapper.class), eq(100));
 
         final String expectedFilter = "(|(sAMAccountName=*{0}*)(uid=*{0}*)(cn=*{0}*)(mail=*{0}*)(otherMailbox=*{0}*))";
-        assertThat(filterArgumentCaptor.getValue(), is(expectedFilter));
+        assertThat(filterArgumentCaptor.getValue()).isEqualTo(expectedFilter);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class SearchUserExecutorTest {
         ArgumentCaptor<String> filterArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(ldap).search(filterArgumentCaptor.capture(), eq(new String[]{"some-text"}), any(UserMapper.class), eq(100));
 
-        assertThat(filterArgumentCaptor.getValue(), is("(cn={0})"));
+        assertThat(filterArgumentCaptor.getValue()).isEqualTo("(cn={0})");
     }
 
     @Test
@@ -100,7 +99,7 @@ public class SearchUserExecutorTest {
                 "  }\n" +
                 "]";
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         JSONAssert.assertEquals(expectedJSON, response.responseBody(), true);
     }
 
@@ -129,7 +128,7 @@ public class SearchUserExecutorTest {
                 "  }\n" +
                 "]";
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         JSONAssert.assertEquals(expectedJSON, response.responseBody(), true);
     }
 
@@ -152,7 +151,7 @@ public class SearchUserExecutorTest {
                 "  }\n" +
                 "]";
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         JSONAssert.assertEquals(expectedJSON, response.responseBody(), true);
     }
 }

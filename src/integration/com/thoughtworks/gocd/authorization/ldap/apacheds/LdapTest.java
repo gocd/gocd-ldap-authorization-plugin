@@ -27,9 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+;
 
 public class LdapTest extends BaseIntegrationTest {
 
@@ -41,8 +42,8 @@ public class LdapTest extends BaseIntegrationTest {
         final List<Entry> search = ldap.search("(uid=*{0}*)", new String[]{"bford"}, 0);
 
         assertNotNull(search);
-        assertThat(search, hasSize(1));
-        assertThat(search.get(0).getDn(), is("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(search).hasSize(1);
+        assertThat(search.get(0).getDn()).isEqualTo("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test
@@ -53,11 +54,11 @@ public class LdapTest extends BaseIntegrationTest {
         final List<Entry> search = ldap.search("(uid=*{0}*)", new String[]{"banks"}, 2);
 
         assertNotNull(search);
-        assertThat(search, hasSize(2));
+        assertThat(search).hasSize(2);
 
         final List<String> DNs = search.stream().map(e -> e.getDn().toString()).collect(Collectors.toList());
 
-        assertThat(DNs, containsInAnyOrder("uid=pbanks,ou=Employees,ou=Enterprise,ou=Principal,ou=system", "uid=sbanks,ou=Clients,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(DNs).containsExactlyInAnyOrder("uid=pbanks,ou=Employees,ou=Enterprise,ou=Principal,ou=system", "uid=sbanks,ou=Clients,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test
@@ -70,11 +71,11 @@ public class LdapTest extends BaseIntegrationTest {
         final List<String> results = ldap.searchGroup(searchBases, "(member=uid=admin,ou=Employees,ou=Enterprise,ou=Principal,ou=system)", entry -> entry.getDn().toString());
 
         assertNotNull(results);
-        assertThat(results, hasSize(3));
-        assertThat(results, containsInAnyOrder(
+        assertThat(results).hasSize(3);
+        assertThat(results).containsExactlyInAnyOrder(
                 "cn=PluginDevs,ou=PrivateGroups,ou=Enterprise,ou=Principal,ou=system",
                 "cn=GoDevs,ou=PrivateGroups,ou=Enterprise,ou=Principal,ou=system",
-                "cn=Admins,ou=Groups,ou=Enterprise,ou=Principal,ou=system"));
+                "cn=Admins,ou=Groups,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test
@@ -84,7 +85,7 @@ public class LdapTest extends BaseIntegrationTest {
         final Entry authenticate = ldap.authenticate("bford", "bob", entry -> entry);
 
         assertNotNull(authenticate);
-        assertThat(authenticate.getDn(), is("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(authenticate.getDn()).isEqualTo("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test
@@ -94,7 +95,7 @@ public class LdapTest extends BaseIntegrationTest {
         final Entry authenticate = ldap.authenticate("bford", "bob", entry -> entry);
 
         assertNotNull(authenticate);
-        assertThat(authenticate.getDn(), is("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(authenticate.getDn()).isEqualTo("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test(expected = LdapRuntimeException.class)
@@ -133,10 +134,10 @@ public class LdapTest extends BaseIntegrationTest {
 
         final List<Entry> results = ldap.search("(uid=*{0}*)", new String[]{"banks"}, 100);
 
-        assertThat(results, hasSize(2));
+        assertThat(results).hasSize(2);
 
-        assertThat(results.get(0).getDn().getParent().toString(), is("ou=Employees,ou=Enterprise,ou=Principal,ou=system"));
-        assertThat(results.get(1).getDn().getParent().toString(), is("ou=Clients,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(results.get(0).getDn().getParent().toString()).isEqualTo("ou=Employees,ou=Enterprise,ou=Principal,ou=system");
+        assertThat(results.get(1).getDn().getParent().toString()).isEqualTo("ou=Clients,ou=Enterprise,ou=Principal,ou=system");
     }
 
     @Test
@@ -147,6 +148,6 @@ public class LdapTest extends BaseIntegrationTest {
         Entry user = ldap.searchUser("bford", entry -> entry);
 
         assertNotNull(user);
-        assertThat(user.getDn().getParent().toString(), is("ou=Employees,ou=Enterprise,ou=Principal,ou=system"));
+        assertThat(user.getDn().getParent().toString()).isEqualTo("ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 }

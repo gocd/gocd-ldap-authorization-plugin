@@ -20,13 +20,11 @@ import com.thoughtworks.gocd.authorization.ldap.LdapConfigurationMother;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CredentialValidatorTest {
 
@@ -52,10 +50,10 @@ public class CredentialValidatorTest {
         final ValidationResult result = new CredentialValidator().validate(configuration);
 
         assertTrue(result.hasErrors());
-        assertThat(result.allErrors(), hasSize(1));
+        assertThat(result.allErrors()).hasSize(1);
 
         final ValidationError validationError = result.allErrors().get(0);
-        assertThat(validationError.key(), is("Password"));
-        assertThat(validationError.message(), is("Password cannot be blank when ManagerDN is provided."));
+        assertThat(validationError.key()).isEqualTo("Password");
+        assertThat(validationError.message()).isEqualTo("Password cannot be blank when ManagerDN is provided.");
     }
 }

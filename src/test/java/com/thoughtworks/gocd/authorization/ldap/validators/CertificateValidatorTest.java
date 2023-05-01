@@ -20,19 +20,16 @@ import com.thoughtworks.gocd.authorization.ldap.LdapConfigurationMother;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertificateValidatorTest {
 
@@ -85,11 +82,11 @@ public class CertificateValidatorTest {
         final ValidationResult result = new CertificateValidator().validate(configuration);
 
         assertTrue(result.hasErrors());
-        assertThat(result.allErrors(), hasSize(1));
+        assertThat(result.allErrors()).hasSize(1);
 
         final ValidationError validationError = result.allErrors().get(0);
-        assertThat(validationError.key(), is("Certificate"));
-        assertThat(validationError.message(), is("Error parsing certificate - `Could not parse certificate: java.io.IOException: Empty input`"));
+        assertThat(validationError.key()).isEqualTo("Certificate");
+        assertThat(validationError.message()).isEqualTo("Error parsing certificate - `Could not parse certificate: java.io.IOException: Empty input`");
     }
 
     @Test
@@ -102,10 +99,10 @@ public class CertificateValidatorTest {
         final ValidationResult result = new CertificateValidator().validate(configuration);
 
         assertTrue(result.hasErrors());
-        assertThat(result.allErrors(), hasSize(1));
+        assertThat(result.allErrors()).hasSize(1);
 
         final ValidationError validationError = result.allErrors().get(0);
-        assertThat(validationError.key(), is("Certificate"));
-        assertThat(validationError.message(), startsWith("Invalid Certificate, expired on `" + EXPIRY_DATE.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))));
+        assertThat(validationError.key()).isEqualTo("Certificate");
+        assertThat(validationError.message()).startsWith("Invalid Certificate, expired on `" + EXPIRY_DATE.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)));
     }
 }

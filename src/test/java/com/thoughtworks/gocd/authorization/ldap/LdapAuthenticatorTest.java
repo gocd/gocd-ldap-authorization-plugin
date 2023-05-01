@@ -23,15 +23,14 @@ import com.thoughtworks.gocd.authorization.ldap.model.*;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.ldap.client.template.EntryMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +43,7 @@ public class LdapAuthenticatorTest {
     private Credentials credentials;
     private LdapAuthenticator ldapAuthenticator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         authConfig = mock(AuthConfig.class);
         ldapFactory = mock(LdapFactory.class);
@@ -79,7 +78,7 @@ public class LdapAuthenticatorTest {
 
         final AuthenticationResponse authenticationResponse = ldapAuthenticator.authenticate(credentials, Collections.singletonList(authConfig));
 
-        assertThat(authenticationResponse.getUser(), is(user));
+        assertThat(authenticationResponse.getUser()).isEqualTo(user);
     }
 
     @Test
@@ -97,7 +96,7 @@ public class LdapAuthenticatorTest {
 
         final AuthenticationResponse authenticationResponse = ldapAuthenticator.authenticate(credentials, Arrays.asList(this.authConfig, validAuthConfig));
 
-        assertThat(authenticationResponse.getConfigUsedForAuthentication(), is(validAuthConfig));
+        assertThat(authenticationResponse.getConfigUsedForAuthentication()).isEqualTo(validAuthConfig);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class LdapAuthenticatorTest {
 
         final AuthenticationResponse authenticationResponse = ldapAuthenticator.authenticate(credentials, Collections.singletonList(authConfig));
 
-        assertThat(authenticationResponse.getConfigUsedForAuthentication(), is(authConfig));
+        assertThat(authenticationResponse.getConfigUsedForAuthentication()).isEqualTo(authConfig);
     }
 
     @Test
@@ -130,6 +129,6 @@ public class LdapAuthenticatorTest {
         when(userMapper.map(entry)).thenReturn(user);
 
         AuthenticationResponse authenticationResponse = ldapAuthenticator.searchUser(USER_NAME, Arrays.asList(this.authConfig, validAuthConfig));
-        assertThat(authenticationResponse.getConfigUsedForAuthentication(), is(validAuthConfig));
+        assertThat(authenticationResponse.getConfigUsedForAuthentication()).isEqualTo(validAuthConfig);
     }
 }

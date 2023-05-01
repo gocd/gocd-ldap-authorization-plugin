@@ -21,8 +21,8 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.authorization.ldap.apacheds.Ldap;
 import com.thoughtworks.gocd.authorization.ldap.apacheds.LdapFactory;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +32,7 @@ public class VerifyConnectionRequestExecutorTest {
     private LdapFactory ldapFactory;
     private Ldap ldap;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ldapFactory = mock(LdapFactory.class);
         ldap = mock(Ldap.class);

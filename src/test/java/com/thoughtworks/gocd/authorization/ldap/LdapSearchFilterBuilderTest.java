@@ -18,11 +18,10 @@ package com.thoughtworks.gocd.authorization.ldap;
 
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LdapSearchFilterBuilderTest {
 
@@ -34,7 +33,7 @@ public class LdapSearchFilterBuilderTest {
         final LdapSearchFilterBuilder builder = new LdapSearchFilterBuilder();
         final String filter = builder.build("member={uid}", entry);
 
-        assertThat(filter, is("member=bford"));
+        assertThat(filter).isEqualTo("member=bford");
     }
 
     @Test
@@ -45,7 +44,7 @@ public class LdapSearchFilterBuilderTest {
 
         final LdapSearchFilterBuilder builder = new LdapSearchFilterBuilder();
         final String filter = builder.build("(| (member=uid={uid}) (memberUid={dn}))", entry);
-        assertThat(filter, is("(| (member=uid=bford) (memberUid=cn=bford,ou=system))"));
+        assertThat(filter).isEqualTo("(| (member=uid=bford) (memberUid=cn=bford,ou=system))");
 
     }
 
@@ -55,10 +54,8 @@ public class LdapSearchFilterBuilderTest {
         entry.setDn("cn=bford,ou=system");
 
         final LdapSearchFilterBuilder builder = new LdapSearchFilterBuilder();
-        assertThrows(
-                "Failed to build search filter `(| (member={uid}) (memberUid=cn=bford,ou=system))`. Missing attribute for the expression `uid`",
-                RuntimeException.class,
-                () -> builder.build("(| (member={uid}) (memberUid={dn}))", entry))
-        ;
+        assertThatThrownBy(() -> builder.build("(| (member={uid}) (memberUid={dn}))", entry))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Failed to build search filter `(| (member={uid}) (memberUid=cn=bford,ou=system))`. Missing attribute for the expression `uid`");
     }
 }

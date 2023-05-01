@@ -19,12 +19,11 @@ package com.thoughtworks.gocd.authorization.ldap.validators;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +39,7 @@ public class URLValidatorTest {
         final ValidationResult result = urlValidator.validate(ldapConfiguration);
 
         assertTrue(result.hasErrors());
-        assertThat(result.allErrors().get(0), is(new ValidationError("Url", "Invalid ldap url.")));
+        assertThat(result.allErrors().get(0)).isEqualTo(new ValidationError("Url", "Invalid ldap url."));
     }
 
     @Test

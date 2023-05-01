@@ -20,8 +20,8 @@ import com.thoughtworks.gocd.authorization.ldap.model.RoleConfig;
 import com.thoughtworks.gocd.authorization.ldap.model.RoleConfiguration;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,9 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.thoughtworks.gocd.authorization.ldap.utils.Util.GSON;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +39,7 @@ public class RoleMapperTest {
     private RoleConfig roleConfig;
     private RoleMapper roleMapper;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         roleMapper = new RoleMapper();
 
@@ -60,7 +58,7 @@ public class RoleMapperTest {
 
         Set<String> roles = roleMapper.map(entry, Collections.singletonList(roleConfig));
 
-        assertThat(roles, containsInAnyOrder("blackbird"));
+        assertThat(roles).containsExactlyInAnyOrder("blackbird");
     }
 
     @Test
@@ -70,7 +68,7 @@ public class RoleMapperTest {
 
         Set<String> roles = roleMapper.map(entry, Collections.singletonList(roleConfig));
 
-        assertThat(true, is(roles.isEmpty()));
+        assertThat(true).isEqualTo(roles.isEmpty());
     }
 
     private RoleConfiguration getRoleProfile(String attName, String attValue, String groupFilter) {

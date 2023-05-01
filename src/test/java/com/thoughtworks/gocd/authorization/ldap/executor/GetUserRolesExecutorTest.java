@@ -23,16 +23,15 @@ import com.thoughtworks.gocd.authorization.ldap.LdapAuthorizer;
 import com.thoughtworks.gocd.authorization.ldap.model.AuthenticationResponse;
 import com.thoughtworks.gocd.authorization.ldap.model.User;
 import com.thoughtworks.gocd.authorization.ldap.request.GetUserRolesRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Collections;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.forAuthorizeWithAttribute;
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.searchUserWithAuthConfig;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class GetUserRolesExecutorTest {
@@ -41,7 +40,7 @@ public class GetUserRolesExecutorTest {
     private LdapAuthorizer ldapAuthorizer;
     private LdapAuthenticator ldapAuthenticator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         pluginRequest = mock(GoPluginApiRequest.class);
         ldapAuthorizer = mock(LdapAuthorizer.class);
@@ -99,7 +98,7 @@ public class GetUserRolesExecutorTest {
 
         String expectedJSON = "[\"admin\"]";
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
 
         JSONAssert.assertEquals(expectedJSON, response.responseBody(), true);
     }

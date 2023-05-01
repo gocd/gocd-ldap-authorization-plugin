@@ -22,14 +22,13 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.authorization.ldap.annotation.Configuration;
 import com.thoughtworks.gocd.authorization.ldap.annotation.MetadataHelper;
 import com.thoughtworks.gocd.authorization.ldap.model.RoleConfiguration;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetRoleConfigMetadataExecutorTest {
 
@@ -38,14 +37,14 @@ public class GetRoleConfigMetadataExecutorTest {
         GoPluginApiResponse response = new GetRoleConfigMetadataExecutor().execute();
         List<Configuration> list = new Gson().fromJson(response.responseBody(), new TypeToken<List<Configuration>>() {
         }.getType());
-        Assert.assertEquals(list.size(), MetadataHelper.getMetadata(RoleConfiguration.class).size());
+        assertEquals(list.size(), MetadataHelper.getMetadata(RoleConfiguration.class).size());
     }
 
     @Test
     public void assertJsonStructure() throws Exception {
         GoPluginApiResponse response = new GetRoleConfigMetadataExecutor().execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         String expectedJSON = "[\n" +
                 "  {\n" +
                 "    \"key\": \"UserGroupMembershipAttribute\",\n" +

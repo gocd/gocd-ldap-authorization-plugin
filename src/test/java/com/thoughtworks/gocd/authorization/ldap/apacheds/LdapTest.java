@@ -26,7 +26,7 @@ import org.apache.directory.api.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.ldap.client.template.EntryMapper;
 import org.apache.directory.ldap.client.template.LdapConnectionTemplate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
@@ -35,9 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class LdapTest {
@@ -59,12 +57,12 @@ public class LdapTest {
 
         final SearchRequest searchRequest = argumentCaptor.getValue();
 
-        assertThat(searchRequest.getBase(), is("ou=foo,dc=bar"));
-        assertThat(searchRequest.getScope(), is(SearchScope.SUBTREE));
-        assertThat(searchRequest.getAttributes(), is(Collections.singletonList("*")));
-        assertThat(searchRequest.getSizeLimit(), is(1L));
-        assertThat(searchRequest.getFilter(), is(FilterParser.parse("(uid=foo)")));
-        assertThat(searchRequest.getTimeLimit(), is(10));
+        assertThat(searchRequest.getBase()).isEqualTo("ou=foo,dc=bar");
+        assertThat(searchRequest.getScope()).isEqualTo(SearchScope.SUBTREE);
+        assertThat(searchRequest.getAttributes()).isEqualTo(Collections.singletonList("*"));
+        assertThat(searchRequest.getSizeLimit()).isEqualTo(1L);
+        assertThat(searchRequest.getFilter()).isEqualTo(FilterParser.parse("(uid=foo)"));
+        assertThat(searchRequest.getTimeLimit()).isEqualTo(10);
     }
 
     @Test
@@ -83,7 +81,7 @@ public class LdapTest {
         String injectionUserName = "*)(objectclass=*";
         ldap.search("(uid={0})", new String[]{injectionUserName}, 1);
 
-        assertThat(argumentCaptor.getValue().getFilter(), is(FilterParser.parse("(uid=\\2A\\29\\28objectclass=\\2A)")));
+        assertThat(argumentCaptor.getValue().getFilter()).isEqualTo(FilterParser.parse("(uid=\\2A\\29\\28objectclass=\\2A)"));
     }
 
     @Test
@@ -105,9 +103,9 @@ public class LdapTest {
 
         final List<SearchRequest> searchRequests = argumentCaptor.getAllValues();
 
-        assertThat(entries, hasSize(2));
-        assertThat(searchRequests.get(0).getBase(), is("ou=foo,dc=bar"));
-        assertThat(searchRequests.get(1).getBase(), is("ou=baz,dc=bar"));
+        assertThat(entries);
+        assertThat(searchRequests.get(0).getBase()).isEqualTo("ou=foo,dc=bar");
+        assertThat(searchRequests.get(1).getBase()).isEqualTo("ou=baz,dc=bar");
     }
 
     @Test
@@ -127,9 +125,9 @@ public class LdapTest {
 
         final List<SearchRequest> searchRequests = argumentCaptor.getAllValues();
 
-        assertThat(entries, hasSize(1));
-        assertThat(searchRequests, hasSize(1));
-        assertThat(searchRequests.get(0).getBase(), is("ou=foo,dc=bar"));
+        assertThat(entries).hasSize(1);
+        assertThat(searchRequests).hasSize(1);
+        assertThat(searchRequests.get(0).getBase()).isEqualTo("ou=foo,dc=bar");
     }
 
     @Test
@@ -146,12 +144,12 @@ public class LdapTest {
         ldap.searchGroup(Arrays.asList("ou=foo,dc=bar"), "(member=admin)", entry -> entry);
 
         final SearchRequest searchRequest = argumentCaptor.getValue();
-        assertThat(searchRequest.getBase(), is("ou=foo,dc=bar"));
-        assertThat(searchRequest.getScope(), is(SearchScope.SUBTREE));
-        assertThat(searchRequest.getAttributes(), is(Collections.singletonList("dn")));
-        assertThat(searchRequest.getSizeLimit(), is(0L));
-        assertThat(searchRequest.getFilter(), is(FilterParser.parse("(member=admin)")));
-        assertThat(searchRequest.getTimeLimit(), is(5));
+        assertThat(searchRequest.getBase()).isEqualTo("ou=foo,dc=bar");
+        assertThat(searchRequest.getScope()).isEqualTo(SearchScope.SUBTREE);
+        assertThat(searchRequest.getAttributes()).isEqualTo(Collections.singletonList("dn"));
+        assertThat(searchRequest.getSizeLimit()).isEqualTo(0L);
+        assertThat(searchRequest.getFilter()).isEqualTo(FilterParser.parse("(member=admin)"));
+        assertThat(searchRequest.getTimeLimit()).isEqualTo(5);
     }
 
     @Test
@@ -171,9 +169,9 @@ public class LdapTest {
 
         final List<SearchRequest> searchRequests = argumentCaptor.getAllValues();
 
-        assertThat(entries, hasSize(2));
-        assertThat(searchRequests.get(0).getBase(), is("ou=foo,dc=bar"));
-        assertThat(searchRequests.get(1).getBase(), is("ou=baz,dc=bar"));
+        assertThat(entries).hasSize(2);
+        assertThat(searchRequests.get(0).getBase()).isEqualTo("ou=foo,dc=bar");
+        assertThat(searchRequests.get(1).getBase()).isEqualTo("ou=baz,dc=bar");
     }
 
     @Test

@@ -26,8 +26,8 @@ import com.thoughtworks.gocd.authorization.ldap.model.User;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.ldap.client.template.EntryMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
@@ -38,8 +38,7 @@ import javax.naming.directory.BasicAttributes;
 import java.util.*;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.roleConfigWith;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -63,7 +62,7 @@ public class LdapAuthorizerTest {
     private User user;
     private LdapAuthorizer ldapAuthorizer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openMocks(this);
         user = new User("ford", "bford", "ford@aspire.com", entry);
@@ -83,10 +82,10 @@ public class LdapAuthorizerTest {
 
         final Set<String> roles = ldapAuthorizer.authorize(user, authConfig, Arrays.asList(admin, view));
 
-        assertThat(roleConfigArgumentCaptor.getValue(), contains(admin));
-        assertThat(roleConfigArgumentCaptor.getValue().size(), is(1));
-        assertThat(roles.size(), is(1));
-        assertThat(roles, contains("admin"));
+        assertThat(roleConfigArgumentCaptor.getValue()).contains(admin);
+        assertThat(roleConfigArgumentCaptor.getValue().size()).isEqualTo(1);
+        assertThat(roles.size()).isEqualTo(1);
+        assertThat(roles).contains("admin");
     }
 
     @Test
@@ -95,7 +94,7 @@ public class LdapAuthorizerTest {
 
         final Set<String> roles = ldapAuthorizer.authorize(user, authConfig, Collections.emptyList());
 
-        assertThat(roles, hasSize(0));
+        assertThat(roles).hasSize(0);
         verifyNoMoreInteractions(roleMapper);
         verifyNoMoreInteractions(ldapFactory);
     }
@@ -114,8 +113,8 @@ public class LdapAuthorizerTest {
 
         final Set<String> roles = ldapAuthorizer.authorize(user, authConfig, Arrays.asList(roleConfig));
 
-        assertThat(roles, hasSize(1));
-        assertThat(roles, contains("admin"));
+        assertThat(roles).hasSize(1);
+        assertThat(roles).contains("admin");
     }
 
     @Test
@@ -137,8 +136,8 @@ public class LdapAuthorizerTest {
 
         final Set<String> roles = ldapAuthorizer.authorize(user, authConfig, Arrays.asList(admin, view));
 
-        assertThat(roles, hasSize(2));
-        assertThat(roles, containsInAnyOrder("admin", "view"));
+        assertThat(roles).hasSize(2);
+        assertThat(roles).containsExactlyInAnyOrder("admin", "view");
     }
 
     @Test
@@ -150,10 +149,10 @@ public class LdapAuthorizerTest {
 
         final Set<String> roles = ldapAuthorizer.authorize(user, authConfig, Arrays.asList(admin));
 
-        assertThat(roleConfigArgumentCaptor.getValue(), contains(admin));
-        assertThat(roleConfigArgumentCaptor.getValue().size(), is(1));
-        assertThat(roles.size(), is(1));
-        assertThat(roles, contains("admin"));
+        assertThat(roleConfigArgumentCaptor.getValue()).contains(admin);
+        assertThat(roleConfigArgumentCaptor.getValue().size()).isEqualTo(1);
+        assertThat(roles.size()).isEqualTo(1);
+        assertThat(roles).contains("admin");
 
         verifyNoMoreInteractions(ldap);
         verifyNoMoreInteractions(builder);

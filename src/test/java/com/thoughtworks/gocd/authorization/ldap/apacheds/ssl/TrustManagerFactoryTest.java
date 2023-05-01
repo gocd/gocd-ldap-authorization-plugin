@@ -16,52 +16,53 @@
 
 package com.thoughtworks.gocd.authorization.ldap.apacheds.ssl;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 import javax.net.ssl.X509TrustManager;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(SystemStubsExtension.class)
 public class TrustManagerFactoryTest {
 
-    @Rule
-    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+    @SystemStub
+    public SystemProperties systemProperties;
 
     @Test
     public void shouldGetTrustManagerWithCustomCertificate() throws Exception {
         final TrustManagerFactory instance = TrustManagerFactory.getInstance();
-        final Certificate certificate = loadCertificate();
+        final X509Certificate certificate = loadCertificate();
 
         final X509TrustManager trustManager = instance.getTrustManager(certificate);
 
         final List<X509Certificate> acceptedIssuers = Arrays.asList(trustManager.getAcceptedIssuers());
 
-        assertThat(acceptedIssuers, contains(certificate));
+        assertThat(acceptedIssuers).contains(certificate);
     }
 
     @Test
     public void shouldGetTrustManagerWithDefaultTrustStoreInAbsenceOfCertificate() throws Exception {
-        System.setProperty("javax.net.ssl.trustStore", TrustManagerFactory.class.getResource("/test-truststore").getFile());
+        systemProperties.set("javax.net.ssl.trustStore", TrustManagerFactory.class.getResource("/test-truststore").getFile());
         final TrustManagerFactory instance = TrustManagerFactory.getInstance();
 
         final X509TrustManager trustManager = instance.getTrustManager(null);
 
         final List<X509Certificate> acceptedIssuers = Arrays.asList(trustManager.getAcceptedIssuers());
 
-        assertThat(acceptedIssuers, contains(loadCertificate()));
+        assertThat(acceptedIssuers).contains(loadCertificate());
     }
 
-    private Certificate loadCertificate() throws CertificateException {
+    private X509Certificate loadCertificate() throws CertificateException {
         final CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        return cf.generateCertificate(TrustManagerFactory.class.getResourceAsStream("/example-cert.pem"));
+        return (X509Certificate) cf.generateCertificate(TrustManagerFactory.class.getResourceAsStream("/example-cert.pem"));
     }
 }

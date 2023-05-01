@@ -26,9 +26,7 @@ import java.util.Set;
 
 import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConfigWithAttribute;
 import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConfigWithGroupMembershipFilter;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
@@ -43,8 +41,8 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
         final Set<String> roles = new LdapAuthorizer().authorize(response.getUser(), authConfig, roleConfigs);
 
-        assertThat(roles, hasSize(1));
-        assertThat(roles, contains("admin"));
+        assertThat(roles).hasSize(1);
+        assertThat(roles).contains("admin");
     }
 
     @Test
@@ -58,8 +56,8 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
         final Set<String> roles = new LdapAuthorizer().authorize(response.getUser(), authConfig, roleConfigs);
 
-        assertThat(roles, hasSize(1));
-        assertThat(roles, contains("view"));
+        assertThat(roles).hasSize(1);
+        assertThat(roles).contains("view");
     }
 
     @Test
@@ -73,7 +71,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
         final Set<String> roles = new LdapAuthorizer().authorize(response.getUser(), authConfig, roleConfigs);
 
-        assertThat(roles, hasSize(0));
+        assertThat(roles).hasSize(0);
     }
 
     @Test
@@ -86,7 +84,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
         final Set<String> roles = new LdapAuthorizer().authorize(response.getUser(), authConfig, roleConfigs);
 
-        assertThat(roles, hasSize(0));
+        assertThat(roles).hasSize(0);
     }
 
     @Test
@@ -96,7 +94,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
         final Set<String> roles = new LdapAuthorizer().authorize(response.getUser(), authConfig, Collections.emptyList());
 
-        assertThat(roles, hasSize(0));
+        assertThat(roles).hasSize(0);
     }
 
     private AuthenticationResponse authenticateUser(String username, String password) {

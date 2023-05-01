@@ -26,23 +26,22 @@ import com.thoughtworks.gocd.authorization.ldap.utils.Util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GetAuthConfigViewExecutorTest {
 
     @Test
     public void shouldRenderTheTemplateInJSON() throws Exception {
         GoPluginApiResponse response = new GetAuthConfigViewExecutor().execute();
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         Map<String, String> hashSet = new Gson().fromJson(response.responseBody(), new TypeToken<Map<String, String>>() {
         }.getType());
-        assertThat(hashSet, hasEntry("template", Util.readResource("/auth-config.template.html")));
+        assertThat(hashSet).containsEntry("template", Util.readResource("/auth-config.template.html"));
     }
 
     @Test
@@ -53,15 +52,15 @@ public class GetAuthConfigViewExecutorTest {
         final List<Configuration> metadataList = MetadataHelper.getMetadata(LdapConfiguration.class);
         for (Configuration configuration : metadataList) {
             final Elements inputFieldForKey = document.getElementsByAttributeValue("ng-model", configuration.getKey());
-            assertThat(inputFieldForKey, hasSize(1));
+            assertThat(inputFieldForKey).hasSize(1);
 
             final Elements spanToShowError = document.getElementsByAttributeValue("ng-class", "{'is-visible': GOINPUTNAME[" + configuration.getKey() + "].$error.server}");
-            assertThat(spanToShowError, hasSize(1));
-            assertThat(spanToShowError.attr("ng-show"), is("GOINPUTNAME[" + configuration.getKey() + "].$error.server"));
-            assertThat(spanToShowError.text(), is("{{GOINPUTNAME[" + configuration.getKey() + "].$error.server}}"));
+            assertThat(spanToShowError).hasSize(1);
+            assertThat(spanToShowError.attr("ng-show")).isEqualTo("GOINPUTNAME[" + configuration.getKey() + "].$error.server");
+            assertThat(spanToShowError.text()).isEqualTo("{{GOINPUTNAME[" + configuration.getKey() + "].$error.server}}");
         }
 
         final Elements inputs = document.select("textarea,input,select");
-        assertThat(inputs, hasSize(metadataList.size()));
+        assertThat(inputs).hasSize(metadataList.size());
     }
 }

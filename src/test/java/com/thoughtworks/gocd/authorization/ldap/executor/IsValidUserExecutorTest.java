@@ -22,12 +22,11 @@ import com.thoughtworks.gocd.authorization.ldap.LdapAuthenticator;
 import com.thoughtworks.gocd.authorization.ldap.model.AuthenticationResponse;
 import com.thoughtworks.gocd.authorization.ldap.model.User;
 import com.thoughtworks.gocd.authorization.ldap.request.IsValidUserRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static com.thoughtworks.gocd.authorization.ldap.RequestBodyMother.getRequestBodyMapForIsUserValid;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class IsValidUserExecutorTest {
@@ -35,7 +34,7 @@ public class IsValidUserExecutorTest {
     private GoPluginApiRequest pluginRequest;
     private LdapAuthenticator ldapAuthenticator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         pluginRequest = mock(GoPluginApiRequest.class);
         ldapAuthenticator = mock(LdapAuthenticator.class);
@@ -64,7 +63,7 @@ public class IsValidUserExecutorTest {
 
         GoPluginApiResponse response = new IsValidUserExecutor(this.pluginRequest, ldapAuthenticator).execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         verify(ldapAuthenticator).searchUserWithAuthConfig("bford", request.getAuthConfig());
     }
 
@@ -78,7 +77,7 @@ public class IsValidUserExecutorTest {
 
         GoPluginApiResponse response = new IsValidUserExecutor(this.pluginRequest, ldapAuthenticator).execute();
 
-        assertThat(response.responseCode(), is(500));
+        assertThat(response.responseCode()).isEqualTo(500);
         verify(ldapAuthenticator).searchUserWithAuthConfig("bford", request.getAuthConfig());
     }
 }

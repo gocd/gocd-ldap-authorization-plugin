@@ -19,12 +19,9 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds;
 import com.thoughtworks.gocd.authorization.ldap.LdapConfigurationMother;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectionConfigurationTest {
     @Test
@@ -38,12 +35,12 @@ public class ConnectionConfigurationTest {
 
         final LdapConnectionConfig ldapConnectionConfig = new ConnectionConfiguration(ldapConfiguration).toLdapConnectionConfig();
 
-        assertTrue(ldapConnectionConfig.isUseSsl());
-        assertThat(ldapConnectionConfig.getLdapHost(), is("foo"));
-        assertThat(ldapConnectionConfig.getLdapPort(), is(389));
-        assertThat(ldapConnectionConfig.getName(), is("uid=admin,ou=system"));
-        assertThat(ldapConnectionConfig.getCredentials(), is("secret"));
-        assertThat(ldapConnectionConfig.getTrustManagers().length, is(1));
+        assertThat(ldapConnectionConfig.isUseSsl()).isTrue();
+        assertThat(ldapConnectionConfig.getLdapHost()).isEqualTo("foo");
+        assertThat(ldapConnectionConfig.getLdapPort()).isEqualTo(389);
+        assertThat(ldapConnectionConfig.getName()).isEqualTo("uid=admin,ou=system");
+        assertThat(ldapConnectionConfig.getCredentials()).isEqualTo("secret");
+        assertThat(ldapConnectionConfig.getTrustManagers().length).isEqualTo(1);
     }
 
     @Test
@@ -52,16 +49,14 @@ public class ConnectionConfigurationTest {
 
         final ConnectionConfiguration connectionConfiguration = new ConnectionConfiguration(configuration);
 
-        assertThat(connectionConfiguration.toString(), is("ConnectionConfiguration{useSsl=false, ldapPort=389, ldapHost='localhost', managerDn='uid=admin,ou=system', password='secret', certString='cert', startTLS=false}"));
+        assertThat(connectionConfiguration.toString()).isEqualTo("ConnectionConfiguration{useSsl=false, ldapPort=389, ldapHost='localhost', managerDn='uid=admin,ou=system', password='secret', certString='cert', startTLS=false}");
     }
 
     @Test
     public void shouldCheckEquality() throws Exception {
-        assertThat(new ConnectionConfiguration(new LdapConfigurationMother.Builder().build()),
-                is(new ConnectionConfiguration(new LdapConfigurationMother.Builder().build())));
+        assertThat(new ConnectionConfiguration(new LdapConfigurationMother.Builder().build())).isEqualTo(new ConnectionConfiguration(new LdapConfigurationMother.Builder().build()));
 
-        assertFalse(new ConnectionConfiguration(new LdapConfigurationMother.Builder().withURL("ldap://bar").build())
-                .equals(new ConnectionConfiguration(new LdapConfigurationMother.Builder().withURL("ldaps://foo").build()))
-        );
+        assertThat(new ConnectionConfiguration(new LdapConfigurationMother.Builder().withURL("ldap://bar").build())
+                .equals(new ConnectionConfiguration(new LdapConfigurationMother.Builder().withURL("ldaps://foo").build()))).isFalse();
     }
 }

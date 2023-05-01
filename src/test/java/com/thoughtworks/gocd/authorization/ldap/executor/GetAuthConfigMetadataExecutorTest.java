@@ -22,14 +22,13 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.gocd.authorization.ldap.annotation.Configuration;
 import com.thoughtworks.gocd.authorization.ldap.annotation.MetadataHelper;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetAuthConfigMetadataExecutorTest {
 
@@ -47,7 +46,7 @@ public class GetAuthConfigMetadataExecutorTest {
     public void assertJsonStructure() throws Exception {
         GoPluginApiResponse response = new GetAuthConfigMetadataExecutor().execute();
 
-        assertThat(response.responseCode(), is(200));
+        assertThat(response.responseCode()).isEqualTo(200);
         String expectedJSON = "[\n" +
                 "  {\n" +
                 "    \"key\": \"Url\",\n" +

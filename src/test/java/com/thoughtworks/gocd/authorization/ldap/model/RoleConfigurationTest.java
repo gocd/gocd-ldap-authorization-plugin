@@ -17,10 +17,9 @@
 package com.thoughtworks.gocd.authorization.ldap.model;
 
 import com.thoughtworks.gocd.authorization.ldap.RequestBodyMother;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RoleConfigurationTest {
 
@@ -28,6 +27,6 @@ public class RoleConfigurationTest {
     public void shouldEncloseGroupMembershipFilterInParentheses() throws Exception {
         final RoleConfig roleConfig = RequestBodyMother.roleConfigWith("foo", "bar", "uniqueMember={0}");
 
-        assertThat(roleConfig.getRoleConfiguration().getGroupMembershipFilter(), is("(uniqueMember={0})"));
+        assertThat(roleConfig.getRoleConfiguration().getGroupMembershipFilter()).isEqualTo("(uniqueMember={0})");
     }
 }

@@ -19,15 +19,13 @@ package com.thoughtworks.gocd.authorization.ldap;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.gocd.authorization.ldap.executor.RequestFromServer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.MatcherAssert.*;;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,12 +40,12 @@ public class LdapPluginTest {
         Thread.currentThread().setContextClassLoader(fakeClassloader);
 
         when(request.requestName()).then((Answer<String>) invocation -> {
-            assertThat(Thread.currentThread().getContextClassLoader(), not(fakeClassloader));
+            assertThat(Thread.currentThread().getContextClassLoader()).isNotEqualTo(fakeClassloader);
             return RequestFromServer.REQUEST_AUTH_CONFIG_VIEW.requestName();
         });
 
-        assertThat(Thread.currentThread().getContextClassLoader(), is(fakeClassloader));
+        assertThat(Thread.currentThread().getContextClassLoader()).isEqualTo(fakeClassloader);
         ldapPlugin.handle(request);
-        assertThat(Thread.currentThread().getContextClassLoader(), is(fakeClassloader));
+        assertThat(Thread.currentThread().getContextClassLoader()).isEqualTo(fakeClassloader);
     }
 }

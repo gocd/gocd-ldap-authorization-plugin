@@ -20,11 +20,11 @@ import com.thoughtworks.gocd.authorization.ldap.LdapConfigurationMother;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationError;
 import com.thoughtworks.gocd.authorization.ldap.model.ValidationResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StartTLSValidatorTest {
 
@@ -38,7 +38,7 @@ public class StartTLSValidatorTest {
         final ValidationResult validationResult = new StartTLSValidator().validate(configuration);
 
         assertTrue(validationResult.hasErrors());
-        assertThat(validationResult.allErrors().get(0), is(new ValidationError("StartTLS", "Cannot startTLS if using `ldaps://` URL.")));
+        assertThat(validationResult.allErrors().get(0)).isEqualTo(new ValidationError("StartTLS", "Cannot startTLS if using `ldaps://` URL."));
     }
 
     @Test
