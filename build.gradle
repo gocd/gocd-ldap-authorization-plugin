@@ -86,7 +86,7 @@ dependencies {
   testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.1'
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.2'
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
-  testImplementation platform('org.junit:junit-bom:5.10.1')
+  testImplementation platform('org.junit:junit-bom:5.10.2')
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
   testImplementation 'uk.org.webcompere:system-stubs-jupiter:2.1.6'
