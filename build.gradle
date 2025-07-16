@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 apply plugin: 'java'
-
-group = 'com.thoughtworks.gocd'
+apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
 gocdPlugin {
   id = 'com.thoughtworks.gocd.authorization.ldap'
-  pluginVersion = '4.2.2'
-  goCdVersion = '20.9.0'
+  pluginVersion = '5.0.0'
+  goCdVersion = '22.1.0'
   name = 'LDAP Authorization Plugin for GoCD'
   description = 'LDAP Authorization Plugin for GoCD'
   vendorName = 'Thoughtworks, Inc.'
@@ -35,15 +33,22 @@ gocdPlugin {
   }
 
   pluginProject = project
+
   prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
   assetsToRelease = [project.tasks.findByName('jar')]
 }
 
+group = 'com.thoughtworks.gocd'
 version = gocdPlugin.fullVersion(project)
 
 repositories {
   mavenCentral()
   mavenLocal()
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
 sourceSets {
@@ -62,8 +67,7 @@ configurations {
 
 ext {
   deps = [
-    gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.2.0',
-    apacheDs: 'org.apache.directory.server:apacheds-core:2.0.0.AM27',
+    gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.2.0'
   ]
 
   versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -72,12 +76,13 @@ ext {
 dependencies {
   compileOnly project.deps.gocdPluginApi
   implementation group: 'com.google.code.gson', name: 'gson', version: '2.13.1'
-  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
-
-  implementation group: 'org.apache.directory.api', name: 'api-ldap-client-api', version: '1.0.3'
+  implementation group: 'org.apache.directory.api', name: 'api-ldap-client-api', version: '2.1.7'
   constraints {
-    implementation('org.apache.mina:mina-core:2.0.27') {
-      because "api-ldap-client-api use an older MINA 2.0 version"
+    implementation('org.apache.mina:mina-core:2.2.4') {
+      because 'api-ldap-client-api uses an older version with reported vulnerabilities'
+    }
+    implementation('org.apache.commons:commons-lang3:3.18.0') {
+      because 'api-ldap-client-api uses an older version with reported vulnerabilities'
     }
   }
 
@@ -86,7 +91,7 @@ dependencies {
   testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.3'
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
   testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.21.1'
-  testImplementation platform('org.junit:junit-bom:5.13.2')
+  testImplementation platform('org.junit:junit-bom:5.13.3')
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
   testImplementation 'uk.org.webcompere:system-stubs-jupiter:2.1.8'
@@ -94,19 +99,14 @@ dependencies {
   testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 
   integrationTestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.5'
-  integrationTestImplementation project.deps.apacheDs
-  integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-annotations', version: project.versions.apacheDs
-  integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-integ', version: '2.0.0-M24'
-  integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-jndi', version: project.versions.apacheDs
-  integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-constants', version: project.versions.apacheDs
-  integrationTestRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine'
+  integrationTestImplementation group: 'org.apache.directory.server', name: 'apacheds-core-integ', version: '2.0.0.AM27'
 }
 
 test {
   useJUnitPlatform()
 }
 
-task integrationTest(type: Test, description: 'Runs the ldap integration tests.') {
+tasks.register('integrationTest', Test) {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
 

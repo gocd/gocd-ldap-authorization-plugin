@@ -18,9 +18,10 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds.pool;
 
 import com.thoughtworks.gocd.authorization.ldap.LdapConfigurationMother;
 import com.thoughtworks.gocd.authorization.ldap.apacheds.ConnectionConfiguration;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.directory.ldap.client.api.LdapConnectionPool;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 
 import static com.thoughtworks.gocd.authorization.ldap.apacheds.pool.ConnectionPoolFactory.getLdapConnectionPool;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,18 +47,18 @@ public class ConnectionPoolFactoryTest {
 
         assertNotNull(ldapConnectionPool);
         assertThat(ldapConnectionPool.getLifo()).isEqualTo(true);
-        assertThat(ldapConnectionPool.getMaxActive()).isEqualTo(250);
+        assertThat(ldapConnectionPool.getMaxTotal()).isEqualTo(250);
         assertThat(ldapConnectionPool.getMaxIdle()).isEqualTo(50);
-        assertThat(ldapConnectionPool.getMaxWait()).isEqualTo(-1L);
+        assertThat(ldapConnectionPool.getMaxWaitDuration()).isEqualTo(Duration.ofMillis(-1L));
         assertThat(ldapConnectionPool.getMinIdle()).isEqualTo(0);
         assertThat(ldapConnectionPool.getNumTestsPerEvictionRun()).isEqualTo(3);
-        assertThat(ldapConnectionPool.getSoftMinEvictableIdleTimeMillis()).isEqualTo(-1L);
-        assertThat(ldapConnectionPool.getTimeBetweenEvictionRunsMillis()).isEqualTo(-1L);
-        assertThat(ldapConnectionPool.getMinEvictableIdleTimeMillis()).isEqualTo(1000 * 60 * 30L);
+        assertThat(ldapConnectionPool.getSoftMinEvictableIdleDuration()).isEqualTo(Duration.ofMillis(-1L));
+        assertThat(ldapConnectionPool.getDurationBetweenEvictionRuns()).isEqualTo(Duration.ofMillis(-1L));
+        assertThat(ldapConnectionPool.getMinEvictableIdleDuration()).isEqualTo(Duration.ofMinutes(30));
         assertThat(ldapConnectionPool.getTestOnBorrow()).isEqualTo(false);
         assertThat(ldapConnectionPool.getTestOnReturn()).isEqualTo(false);
         assertThat(ldapConnectionPool.getTestWhileIdle()).isEqualTo(false);
-        assertThat(ldapConnectionPool.getWhenExhaustedAction()).isEqualTo(GenericObjectPool.WHEN_EXHAUSTED_BLOCK);
+        assertThat(ldapConnectionPool.getBlockWhenExhausted()).isTrue();
     }
 
     @Test

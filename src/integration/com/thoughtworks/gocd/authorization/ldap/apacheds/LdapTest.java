@@ -19,19 +19,34 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds;
 import com.thoughtworks.gocd.authorization.ldap.BaseIntegrationTest;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.exception.LdapTlsHandshakeException;
 import org.apache.directory.ldap.client.template.exception.LdapRuntimeException;
 import org.apache.directory.ldap.client.template.exception.PasswordException;
-import org.junit.Test;
+import org.apache.directory.server.annotations.CreateLdapServer;
+import org.apache.directory.server.annotations.CreateTransport;
+import org.apache.directory.server.core.annotations.ApplyLdifFiles;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-;
-
+@ApplyLdifFiles(value = "users.ldif", clazz = BaseIntegrationTest.class)
+@CreateLdapServer(
+        transports =
+                {
+                        @CreateTransport(protocol = "LDAP", address = "localhost"),
+                        @CreateTransport(protocol = "LDAPS", address = "localhost")
+                },
+        keyStore = "./src/testdata/ldap.jks",
+        certificatePassword = "secret",
+        saslHost = "localhost"
+)
 public class LdapTest extends BaseIntegrationTest {
 
     @Test
@@ -98,30 +113,36 @@ public class LdapTest extends BaseIntegrationTest {
         assertThat(authenticate.getDn()).isEqualTo("uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 
-    @Test(expected = LdapRuntimeException.class)
+    @Test
     public void shouldErrorOutForInvalidCertificate() throws PasswordException {
         final LdapConfiguration ldapConfiguration = ldapConfigurationWithInvalidCert("ldaps", new String[]{"ou=system"});
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        ldap.authenticate("bford", "bob", entry -> entry);
+        assertThatCode(() -> ldap.authenticate("bford", "bob", entry -> entry))
+                .isInstanceOf(LdapRuntimeException.class)
+                .hasCauseInstanceOf(LdapTlsHandshakeException.class);
     }
 
-    @Test(expected = PasswordException.class)
+    @Test
     public void shouldErrorOutIfFailToAuthenticateUser() throws Exception {
         final LdapConfiguration ldapConfiguration = ldapConfigurationWithValidCert("ldaps", new String[]{"ou=system"});
 
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        ldap.authenticate("bford", "invalid-password", entry -> entry);
+        assertThatCode(() -> ldap.authenticate("bford", "wrong-password", entry -> entry))
+                .isInstanceOf(PasswordException.class)
+                .hasMessageContaining("Cannot authenticate user uid=bford,ou=Employees,ou=Enterprise,ou=Principal,ou=system");
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldErrorIfUserNotExistInLdapServer() throws Exception {
         final LdapConfiguration ldapConfiguration = ldapConfigurationWithValidCert("ldaps", new String[]{"ou=system"});
 
         final Ldap ldap = new Ldap(ldapConfiguration);
 
-        ldap.authenticate("foo", "bar", entry -> entry);
+        assertThatCode(() -> ldap.authenticate("foo", "bar",entry -> entry))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(format("User foo does not exist in {0}", ldapConfiguration.getLdapUrl().toString()));
     }
 
     @Test

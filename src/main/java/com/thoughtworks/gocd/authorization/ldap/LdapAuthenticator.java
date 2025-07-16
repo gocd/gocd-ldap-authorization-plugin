@@ -24,7 +24,6 @@ import org.apache.directory.api.ldap.model.entry.Entry;
 import java.util.List;
 
 import static com.thoughtworks.gocd.authorization.ldap.LdapPlugin.LOG;
-import static java.text.MessageFormat.format;
 
 public class LdapAuthenticator {
 
@@ -70,13 +69,13 @@ public class LdapAuthenticator {
         final Ldap ldap = ldapFactory.ldapForConfiguration(configuration);
 
         try {
-            LOG.info(format("[Authenticate] Authenticating User: {0} using auth_config: {1}", credentials.getUsername(), authConfigId));
+            LOG.info("[Authenticate] Authenticating User: {} using auth_config: {}", credentials.getUsername(), authConfigId);
             final Entry entry = callback.apply(ldap);
             final User user = configuration.getUserMapper().map(entry);
 
             return new AuthenticationResponse(user, authConfig);
         } catch (Exception e) {
-            LOG.error(format("[Authenticate] Failed to authenticate user `{0}` using auth_config: {1}. ", credentials.getUsername(), authConfigId), e);
+            LOG.error("[Authenticate] Failed to authenticate user `{}` using auth_config: {}. ", credentials.getUsername(), authConfigId, e);
         }
         return null;
     }

@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.thoughtworks.gocd.authorization.ldap.LdapPlugin.LOG;
-import static java.text.MessageFormat.format;
 
 public class SearchUserExecutor implements RequestExecutor {
     private final LdapFactory ldapFactory;
@@ -62,15 +61,15 @@ public class SearchUserExecutor implements RequestExecutor {
                 final Ldap ldap = ldapFactory.ldapForConfiguration(configuration);
                 String userSearchFilter = configuration.getUserSearchFilter();
 
-                LOG.info(format("[User Search] Looking up for users matching search_term: `{0}`" +
-                        " using the search_filter: `{1}` and auth_config: `{3}`", searchTerm, userSearchFilter, authConfig.getId()));
+                LOG.info("[User Search] Looking up for users matching search_term: `{}`" +
+                        " using the search_filter: `{}` and auth_config: `{}`", searchTerm, userSearchFilter, authConfig.getId());
 
                 List<User> users = ldap.search(userSearchFilter, new String[]{searchTerm}, configuration.getUserMapper(), 100);
                 allUsers.addAll(users);
                 if (users.size() == 100)
                     break;
             } catch (Exception e) {
-                LOG.error(format("[User Search] Failed to search user using auth_config: `{0}`", authConfig.getId()), e);
+                LOG.error("[User Search] Failed to search user using auth_config: `{}`", authConfig.getId(), e);
             }
         }
         return allUsers;

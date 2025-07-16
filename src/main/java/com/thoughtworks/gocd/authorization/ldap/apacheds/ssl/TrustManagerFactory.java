@@ -25,7 +25,6 @@ import java.security.cert.CertificateException;
 import java.util.UUID;
 
 import static com.thoughtworks.gocd.authorization.ldap.LdapPlugin.LOG;
-import static java.text.MessageFormat.format;
 
 public class TrustManagerFactory {
     public static final String KEYSTORE_PASSWD = UUID.randomUUID().toString();
@@ -52,10 +51,9 @@ public class TrustManagerFactory {
 
             TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 
-            for (int i = 0; i < trustManagers.length; i++) {
-                if (trustManagers[i] instanceof X509TrustManager) {
-                    X509TrustManager trustManager = (X509TrustManager) trustManagers[i];
-                    LOG.debug(format("Found X509TrustManager {0}.", trustManager));
+            for (TrustManager manager : trustManagers) {
+                if (manager instanceof X509TrustManager trustManager) {
+                    LOG.debug("Found X509TrustManager {}.", trustManager);
                     return trustManager;
                 }
             }
@@ -74,7 +72,7 @@ public class TrustManagerFactory {
     private KeyStore createInMemoryKeyStore(Certificate certificate) {
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS");
-            LOG.debug(format("Loading in memory keystore using password {0}.", KEYSTORE_PASSWD));
+            LOG.debug("Loading in memory keystore using password {}.", KEYSTORE_PASSWD);
             keyStore.load(null, KEYSTORE_PASSWD.toCharArray());
 
             addCertificate(certificate, keyStore);

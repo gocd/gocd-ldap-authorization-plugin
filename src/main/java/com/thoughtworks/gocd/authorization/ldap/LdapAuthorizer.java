@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.thoughtworks.gocd.authorization.ldap.LdapPlugin.LOG;
-import static java.text.MessageFormat.format;
 
 public class LdapAuthorizer {
     private final LdapFactory ldapFactory;
@@ -53,8 +52,8 @@ public class LdapAuthorizer {
         final List<RoleConfig> roles = filterRoles(authConfig, roleConfigs);
 
         if (roles.isEmpty()) {
-            LOG.info(format("[Authenticate] Skipping authorization for user: `{0}` as no roles defined for auth_config: `{1}`",
-                    user.getUsername(), authConfig.getId()));
+            LOG.info("[Authenticate] Skipping authorization for user: `{}` as no roles defined for auth_config: `{}`",
+                    user.getUsername(), authConfig.getId());
             return Collections.emptySet();
         }
 
@@ -80,7 +79,7 @@ public class LdapAuthorizer {
                 roleConfig.getRoleConfiguration().hasGroupMembershipFilter();
 
         if (!isValidRole) {
-            LOG.warn(format("[Authenticate] Skipping authorization mapping for plugin role config: `{0}` as it is invalid.", roleConfig.getName()));
+            LOG.warn("[Authenticate] Skipping authorization mapping for plugin role config: `{}` as it is invalid.", roleConfig.getName());
         }
 
         return isValidRole;
@@ -92,13 +91,13 @@ public class LdapAuthorizer {
 
     private Set<String> authorizeUser(User user, AuthConfig authConfig, List<RoleConfig> roleConfigs) {
         try {
-            LOG.debug(format("[Authenticate] Resolving roles for user: `{0}` using auth_config: `{1}`.", user.getUsername(), authConfig.getId()));
+            LOG.debug("[Authenticate] Resolving roles for user: `{}` using auth_config: `{}`.", user.getUsername(), authConfig.getId());
             final Set<String> roles = getRolesBasedOnUserAttributeMapping(user, roleConfigs);
             roles.addAll(getRolesBasedOnGroupMembershipFilter(user, authConfig, unMappedRoles(roles, roleConfigs)));
 
             return roles;
         } catch (Exception e) {
-            LOG.error(format("[Authenticate] Error resolving roles for user: `{0}` using auth_config: `{1}`", user.getUsername(), authConfig.getId()), e);
+            LOG.error("[Authenticate] Error resolving roles for user: `{}` using auth_config: `{}`", user.getUsername(), authConfig.getId(), e);
         }
         return Collections.emptySet();
     }
@@ -115,15 +114,15 @@ public class LdapAuthorizer {
             }
 
             try {
-                LOG.debug(format("[Authenticate] Resolving role using role_config: `{0}` and group_membership_filter: `{1}`",
-                        roleConfig.getName(), roleConfiguration.getGroupMembershipFilter()));
+                LOG.debug("[Authenticate] Resolving role using role_config: `{}` and group_membership_filter: `{}`",
+                        roleConfig.getName(), roleConfiguration.getGroupMembershipFilter());
                 final String filter = builder.build(roleConfiguration.getGroupMembershipFilter(), user.getEntry());
                 final List<Entry> entries = ldap.searchGroup(roleConfiguration.getGroupSearchBases(), filter, e -> e);
                 if (!entries.isEmpty()) {
                     userRoles.add(roleConfig.getName());
                 }
             } catch (Exception e) {
-                LOG.error(format("[Authenticate] Error assigning role: `{0}` using group membership filter: `{1}`.", roleConfig.getName(), roleConfiguration.getGroupMembershipFilter()), e);
+                LOG.error("[Authenticate] Error assigning role: `{}` using group membership filter: `{}`.", roleConfig.getName(), roleConfiguration.getGroupMembershipFilter(), e);
             }
         }
         if (userRoles.isEmpty()) {

@@ -18,16 +18,34 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds.pool;
 
 import com.thoughtworks.gocd.authorization.ldap.apacheds.ConnectionConfiguration;
 import com.thoughtworks.gocd.authorization.ldap.exception.LdapException;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.directory.ldap.client.api.DefaultLdapConnectionFactory;
 import org.apache.directory.ldap.client.api.DefaultPoolableLdapConnectionFactory;
+import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapConnectionPool;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ConnectionPoolFactory {
     private final static Map<ConnectionConfiguration, LdapConnectionPool> ldapConnectionPoolMap = new HashMap<>();
-    private static final ConnectionPoolConfiguration CONNECTION_POOL_CONFIGURATION = new ConnectionPoolConfiguration();
+    private static final GenericObjectPoolConfig<LdapConnection> CONNECTION_POOL_CONFIGURATION = createConfig();
+
+    private static <T> GenericObjectPoolConfig<T> createConfig() {
+        GenericObjectPoolConfig<T> poolConfig = new GenericObjectPoolConfig<>();
+        poolConfig.setLifo(true);
+        poolConfig.setMaxTotal(250);
+        poolConfig.setMaxIdle(50);
+        poolConfig.setMinIdle(0);
+        poolConfig.setNumTestsPerEvictionRun(3);
+        poolConfig.setMinEvictableIdleDuration(Duration.ofMinutes(30));
+        poolConfig.setTestOnBorrow(false);
+        poolConfig.setTestOnReturn(false);
+        poolConfig.setTestWhileIdle(false);
+        poolConfig.setBlockWhenExhausted(true);
+        return poolConfig;
+    }
 
     private ConnectionPoolFactory() {
     }
@@ -57,7 +75,7 @@ public class ConnectionPoolFactory {
 
     private static LdapConnectionPool createLdapConnectionPool(ConnectionConfiguration configuration) throws Exception {
         final DefaultLdapConnectionFactory factory = new DefaultLdapConnectionFactory(configuration.toLdapConnectionConfig());
-        return new LdapConnectionPool(new DefaultPoolableLdapConnectionFactory(factory), CONNECTION_POOL_CONFIGURATION.getPoolConfig());
+        return new LdapConnectionPool(new DefaultPoolableLdapConnectionFactory(factory), CONNECTION_POOL_CONFIGURATION);
     }
 
     private static void register(ConnectionConfiguration configuration, LdapConnectionPool ldapConnectionFactory) {

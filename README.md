@@ -6,7 +6,7 @@ The GoCD LDAP/AD plugin implements the [Authorization Plugin](https://plugin-api
 
 ### Supported GoCD versions
 
-The plugin version `3.0.0` supports GoCD version `19.2.0` and above. The plugin is upgraded to version 2 of the authorization extension to support [Access Token](https://docs.gocd.org/current/configuration/access_tokens.html) based API access.
+The plugin version `5.x` supports GoCD version `22.1.0` and above.
 
 Table of Contents
 =================

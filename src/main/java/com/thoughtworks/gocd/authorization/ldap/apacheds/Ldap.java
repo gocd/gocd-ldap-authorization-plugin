@@ -19,7 +19,7 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import org.apache.directory.api.ldap.codec.api.LdapApiService;
 import org.apache.directory.api.ldap.codec.api.LdapApiServiceFactory;
-import org.apache.directory.api.ldap.extras.controls.ppolicy_impl.PasswordPolicyDecorator;
+import org.apache.directory.api.ldap.extras.controls.ppolicy.PasswordPolicyRequestImpl;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.filter.FilterEncoder;
@@ -33,7 +33,6 @@ import org.apache.directory.ldap.client.template.LdapConnectionTemplate;
 import org.apache.directory.ldap.client.template.PasswordWarning;
 import org.apache.directory.ldap.client.template.exception.PasswordException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,9 +63,9 @@ public class Ldap {
             final PasswordWarning warning = preformBind(entry.getDn(), password);
 
             if (warning != null) {
-                LOG.warn(format("Your password will expire in {0} seconds", warning.getTimeBeforeExpiration()));
-                LOG.warn(format("Remaining authentications before the account will be locked - {0}", warning.getGraceAuthNsRemaining()));
-                LOG.warn(format("Password reset is required - {0}", warning.isChangeAfterReset()));
+                LOG.warn("Your password will expire in {} seconds", warning.getTimeBeforeExpiration());
+                LOG.warn("Remaining authentications before the account will be locked - {}", warning.getGraceAuthNsRemaining());
+                LOG.warn("Password reset is required - {}", warning.isChangeAfterReset());
             }
 
             return mapper.map(entry);
@@ -92,14 +91,14 @@ public class Ldap {
         final BindRequest bindRequest = new BindRequestImpl()
                 .setName(userDn.getName())
                 .setCredentials(password)
-                .addControl(new PasswordPolicyDecorator(ldapApiService));
+                .addControl(new PasswordPolicyRequestImpl());
 
-        LOG.debug("Performing bind using userDn `{0}`.");
+        LOG.debug("Performing bind using userDn `{}`.", userDn.getName());
         return new AbstractPasswordPolicyResponder(ldapApiService) {
         }.process(() -> {
             try (LdapNetworkConnection ldapNetworkConnection = new LdapNetworkConnection(connectionConfig)) {
                 return ldapNetworkConnection.bind(bindRequest);
-            } catch (IOException e) {
+            } catch (LdapException e) {
                 throw new RuntimeException(e);
             }
         });

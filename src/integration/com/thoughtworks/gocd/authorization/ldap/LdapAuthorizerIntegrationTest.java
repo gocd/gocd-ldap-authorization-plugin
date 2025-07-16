@@ -17,7 +17,10 @@
 package com.thoughtworks.gocd.authorization.ldap;
 
 import com.thoughtworks.gocd.authorization.ldap.model.*;
-import org.junit.Test;
+import org.apache.directory.server.annotations.CreateLdapServer;
+import org.apache.directory.server.annotations.CreateTransport;
+import org.apache.directory.server.core.annotations.ApplyLdifFiles;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +31,17 @@ import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConf
 import static com.thoughtworks.gocd.authorization.ldap.RoleConfigMother.roleConfigWithGroupMembershipFilter;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ApplyLdifFiles(value = "users.ldif", clazz = BaseIntegrationTest.class)
+@CreateLdapServer(
+        transports =
+                {
+                        @CreateTransport(protocol = "LDAP", address = "localhost"),
+                        @CreateTransport(protocol = "LDAPS", address = "localhost")
+                },
+        keyStore = "./src/testdata/ldap.jks",
+        certificatePassword = "secret",
+        saslHost = "localhost"
+)
 public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
     @Test

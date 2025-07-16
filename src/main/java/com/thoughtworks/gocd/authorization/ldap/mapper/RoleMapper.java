@@ -23,10 +23,12 @@ import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.entry.Value;
 
 import javax.naming.NamingException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.thoughtworks.gocd.authorization.ldap.LdapPlugin.LOG;
-import static java.text.MessageFormat.format;
 
 public class RoleMapper {
     public Set<String> map(Entry entry, List<RoleConfig> roleConfigs) {
@@ -43,14 +45,14 @@ public class RoleMapper {
         for (RoleConfig roleConfig : roleConfigs) {
             RoleConfiguration roleConfiguration = roleConfig.getRoleConfiguration();
             if (roleConfiguration.hasGroupMembershipAttributes()) {
-                LOG.debug(format("[Authenticate] Resolving role using role_config: `{0}` and user_member_of_attribute: `{1}`",
-                        roleConfig.getName(), roleConfiguration.getUserGroupMembershipAttribute()));
+                LOG.debug("[Authenticate] Resolving role using role_config: `{}` and user_member_of_attribute: `{}`",
+                        roleConfig.getName(), roleConfiguration.getUserGroupMembershipAttribute());
                 try {
                     final Attribute memberOfAttribute = entry.get(roleConfiguration.getUserGroupMembershipAttribute());
 
                     if (memberOfAttribute == null) {
-                        LOG.info(format("[Authenticate] Missing User Member of Attribute: `{0}` on user entry",
-                                roleConfiguration.getUserGroupMembershipAttribute()));
+                        LOG.info("[Authenticate] Missing User Member of Attribute: `{}` on user entry",
+                                roleConfiguration.getUserGroupMembershipAttribute());
                         continue;
                     }
 
@@ -58,8 +60,8 @@ public class RoleMapper {
                         roles.add(roleConfig.getName());
                     }
                 } catch (Exception e) {
-                    LOG.error(format("[Authenticate] Error mapping roles using User Member of Attribute: `{0}`",
-                            roleConfiguration.getUserGroupMembershipAttribute()), e);
+                    LOG.error("[Authenticate] Error mapping roles using User Member of Attribute: `{}`",
+                            roleConfiguration.getUserGroupMembershipAttribute(), e);
                 }
             }
         }
@@ -70,14 +72,13 @@ public class RoleMapper {
     private boolean hasMatchingMembershipAttribute(RoleConfig roleConfig, Attribute attribute) throws NamingException {
         final List<String> groupIdentifiers = roleConfig.getRoleConfiguration().getGroupIdentifiers();
 
-        final Iterator<Value<?>> iterator = attribute.iterator();
-        while (iterator.hasNext()) {
-            if (groupIdentifiers.contains(iterator.next().getString())) {
+        for (Value value : attribute) {
+            if (groupIdentifiers.contains(value.getString())) {
                 return true;
             }
         }
 
-        LOG.debug(format("[Authenticate] Attribute {0} is not part of Group Identifiers {1} defined in role {2}.", attribute, groupIdentifiers, roleConfig.getName()));
+        LOG.debug("[Authenticate] Attribute {} is not part of Group Identifiers {} defined in role {}.", attribute, groupIdentifiers, roleConfig.getName());
 
         return false;
     }

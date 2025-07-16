@@ -20,12 +20,25 @@ import com.thoughtworks.gocd.authorization.ldap.BaseIntegrationTest;
 import com.thoughtworks.gocd.authorization.ldap.model.LdapConfiguration;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapConnectionPool;
-import org.junit.Test;
+import org.apache.directory.server.annotations.CreateLdapServer;
+import org.apache.directory.server.annotations.CreateTransport;
+import org.apache.directory.server.core.annotations.ApplyLdifFiles;
+import org.junit.jupiter.api.Test;
 
 import static com.thoughtworks.gocd.authorization.ldap.apacheds.pool.ConnectionPoolFactory.getLdapConnectionPool;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@ApplyLdifFiles(value = "users.ldif", clazz = BaseIntegrationTest.class)
+@CreateLdapServer(
+        transports =
+                {
+                        @CreateTransport(protocol = "LDAP", address = "localhost"),
+                        @CreateTransport(protocol = "LDAPS", address = "localhost")
+                },
+        keyStore = "./src/testdata/ldap.jks",
+        certificatePassword = "secret",
+        saslHost = "localhost"
+)
 public class ConnectionPoolFactoryTest extends BaseIntegrationTest {
 
     @Test
@@ -35,7 +48,7 @@ public class ConnectionPoolFactoryTest extends BaseIntegrationTest {
 
         final LdapConnection connection = ldapConnectionPool.getConnection();
 
-        assertNotNull(connection);
-        assertTrue(connection.isConnected());
+        assertThat(connection).isNotNull();
+        assertThat(connection.isConnected()).isTrue();
     }
 }
