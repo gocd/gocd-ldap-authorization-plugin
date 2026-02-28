@@ -99,6 +99,20 @@ dependencies {
     }
   }
 
+  // workaround for declaring dependencies that are not needed at runtime
+  components {
+    [
+      'com.github.ben-manes.caffeine:caffeine',
+      'com.google.code.gson:gson'
+    ].each {
+      withModule(it, { details ->
+        details.allVariants {
+          withDependencies { removeAll { it.name in ["jspecify", "error_prone_annotations"] } }
+        }
+      })
+    }
+  }
+
   testImplementation project.deps.gocdPluginApi
   testImplementation 'org.mockito:mockito-core:5.21.0'
   testImplementation 'org.skyscreamer:jsonassert:1.5.3'
