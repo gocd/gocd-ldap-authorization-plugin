@@ -30,24 +30,23 @@ import java.text.MessageFormat;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ConnectionConfiguration {
-    private boolean useSsl = false;
-    private int ldapPort;
-    private String ldapHost;
-    private String managerDn;
-    private String password;
-    private String certString;
-    private boolean startTLS;
+    private final int ldapPort;
+    private final String ldapHost;
+    private final String managerDn;
+    private final String password;
+    private final String certString;
+    private final boolean useSsl;
+    private final boolean startTLS;
 
 
     public ConnectionConfiguration(LdapConfiguration ldapConfiguration) {
         this.ldapHost = ldapConfiguration.getLdapUrl().getHost();
         this.ldapPort = getPort(ldapConfiguration);
-        this.useSsl = ldapConfiguration.useSSL();
         this.certString = ldapConfiguration.getCertificate();
         this.managerDn = ldapConfiguration.getManagerDn();
         this.password = ldapConfiguration.getPassword();
+        this.useSsl = ldapConfiguration.useSSL();
         this.startTLS = ldapConfiguration.startTLS();
-        this.certString = ldapConfiguration.getCertificate();
     }
 
     private int getPort(LdapConfiguration ldapConfiguration) {

@@ -35,10 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
                 {
                         @CreateTransport(protocol = "LDAP", address = "localhost"),
                         @CreateTransport(protocol = "LDAPS", address = "localhost")
-                },
-        keyStore = "./src/testdata/ldap.jks",
-        certificatePassword = "secret",
-        saslHost = "localhost"
+                }
 )
 public class LdapAuthenticatorIntegrationTest extends BaseIntegrationTest {
 

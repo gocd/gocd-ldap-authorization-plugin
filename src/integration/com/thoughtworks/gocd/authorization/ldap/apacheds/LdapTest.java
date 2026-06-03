@@ -42,10 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
                 {
                         @CreateTransport(protocol = "LDAP", address = "localhost"),
                         @CreateTransport(protocol = "LDAPS", address = "localhost")
-                },
-        keyStore = "./src/testdata/ldap.jks",
-        certificatePassword = "secret",
-        saslHost = "localhost"
+                }
 )
 public class LdapTest extends BaseIntegrationTest {
 
@@ -115,7 +112,7 @@ public class LdapTest extends BaseIntegrationTest {
 
     @Test
     public void shouldErrorOutForInvalidCertificate() throws PasswordException {
-        final LdapConfiguration ldapConfiguration = ldapConfigurationWithInvalidCert("ldaps", new String[]{"ou=system"});
+        final LdapConfiguration ldapConfiguration = ldapConfigurationWithInvalidCert(new String[]{"ou=system"});
         final Ldap ldap = new Ldap(ldapConfiguration);
 
         assertThatCode(() -> ldap.authenticate("bford", "bob", entry -> entry))

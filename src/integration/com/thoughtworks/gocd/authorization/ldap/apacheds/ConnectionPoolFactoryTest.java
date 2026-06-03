@@ -34,10 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 {
                         @CreateTransport(protocol = "LDAP", address = "localhost"),
                         @CreateTransport(protocol = "LDAPS", address = "localhost")
-                },
-        keyStore = "./src/testdata/ldap.jks",
-        certificatePassword = "secret",
-        saslHost = "localhost"
+                }
 )
 public class ConnectionPoolFactoryTest extends BaseIntegrationTest {
 
