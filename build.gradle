@@ -18,7 +18,6 @@ import org.gradle.api.plugins.jvm.JvmTestSuite
 
 plugins {
   id 'java'
-  id 'jvm-test-suite'
 }
 apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
