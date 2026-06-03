@@ -37,15 +37,12 @@ import static org.assertj.core.api.Assertions.assertThat;
                 {
                         @CreateTransport(protocol = "LDAP", address = "localhost"),
                         @CreateTransport(protocol = "LDAPS", address = "localhost")
-                },
-        keyStore = "./src/testdata/ldap.jks",
-        certificatePassword = "secret",
-        saslHost = "localhost"
+                }
 )
 public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    public void shouldAuthorizeUserUsingAttributeNameAndValue() throws Exception {
+    public void shouldAuthorizeUserUsingAttributeNameAndValue() {
         final AuthenticationResponse response = authenticateUser("bford", "bob");
         final AuthConfig authConfig = response.getConfigUsedForAuthentication();
 
@@ -60,7 +57,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldAuthorizeUserUsingGroupMembershipFilter() throws Exception {
+    public void shouldAuthorizeUserUsingGroupMembershipFilter() {
         final AuthenticationResponse response = authenticateUser("sbanks", "sarah");
         final AuthConfig authConfig = response.getConfigUsedForAuthentication();
 
@@ -75,7 +72,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldReturnEmptyRoleListIfNoRoleConfigMatchesInLdapServer() throws Exception {
+    public void shouldReturnEmptyRoleListIfNoRoleConfigMatchesInLdapServer() {
         final AuthenticationResponse response = authenticateUser("dthorud", "david");
         final AuthConfig authConfig = response.getConfigUsedForAuthentication();
 
@@ -89,7 +86,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldReturnEmptyRoleListIfFailedToAuthorizeUser() throws Exception {
+    public void shouldReturnEmptyRoleListIfFailedToAuthorizeUser() {
         final AuthenticationResponse response = authenticateUser("dthorud", "david");
         final AuthConfig authConfig = response.getConfigUsedForAuthentication();
 
@@ -102,7 +99,7 @@ public class LdapAuthorizerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldReturnEmptyRoleListIfNoRoleConfigProvided() throws Exception {
+    public void shouldReturnEmptyRoleListIfNoRoleConfigProvided() {
         final AuthenticationResponse response = authenticateUser("dthorud", "david");
         final AuthConfig authConfig = response.getConfigUsedForAuthentication();
 
