@@ -19,7 +19,9 @@ package com.thoughtworks.gocd.authorization.ldap.apacheds.ssl;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.UUID;
@@ -89,12 +91,8 @@ public class TrustManagerFactory {
             return;
         }
 
-        final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        final KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
         LOG.debug("Adding certificate to keystore.");
         keyStore.setCertificateEntry("cert", certificate);
-        keyStore.setKeyEntry("private", keyPair.getPrivate(), KEYSTORE_PASSWD.toCharArray(), new Certificate[]{certificate});
         LOG.debug("Certificate successfully added to keystore.");
     }
 }
